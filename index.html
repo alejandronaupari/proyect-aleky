@@ -183,7 +183,16 @@
                                     <select id="calc-period">
                                         <option value="Quincena">Primera Quincena</option>
                                         <option value="Cierre de Mes" selected>Cierre de Mes (Fin de Mes)</option>
+                                        <option value="Semanal">Pago Semanal</option>
+                                        <option value="Diario">Pago Diario (Por Días)</option>
                                     </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row" id="row-dias-trabajados" style="display: none;">
+                                <div class="form-group">
+                                    <label for="calc-dias-trabajados">Días Trabajados en el Periodo</label>
+                                    <input type="number" id="calc-dias-trabajados" value="15" min="1" max="31">
                                 </div>
                             </div>
 
@@ -230,6 +239,74 @@
                                     <input type="number" step="0.01" id="calc-afp" value="0" min="0">
                                 </div>
                             </div>
+
+                            <div class="section-divider">Asistentes de Cálculo Auxiliares (Opcional)</div>
+                             
+                             <div class="asistentes-tabs">
+                                 <button type="button" id="tab-btn-asistencia" class="asistente-tab-btn active" onclick="switchAsistente('asist-asistencia')">Asistencia Diaria</button>
+                                 <button type="button" id="tab-btn-amanecida" class="asistente-tab-btn" onclick="switchAsistente('asist-amanecida')">Turno Amanecida</button>
+                             </div>
+
+                             <!-- 1. Asistente Asistencia Diaria -->
+                             <div id="asist-asistencia" class="asistente-panel active">
+                                 <p class="asistente-help">Ingresa las horas de asistencia de un día. El sistema descontará la tardanza y calculará las horas extras netas desplazando la hora de salida de forma compensatoria.</p>
+                                 <div class="form-row">
+                                     <div class="form-group">
+                                         <label for="asist-dia-semana">Día de la Semana</label>
+                                         <select id="asist-dia-semana">
+                                             <option value="L-V">Lunes a Viernes</option>
+                                             <option value="Sabado">Sábado</option>
+                                             <option value="Domingo">Domingo</option>
+                                         </select>
+                                     </div>
+                                     <div class="form-group">
+                                         <label for="asist-entrada">Hora Entrada (Estándar 9:00 AM)</label>
+                                         <input type="time" id="asist-entrada" value="09:00">
+                                     </div>
+                                 </div>
+                                 <div class="form-row">
+                                     <div class="form-group">
+                                         <label for="asist-almuerzo-salida">Salida Almuerzo (Estándar 1:00 PM)</label>
+                                         <input type="time" id="asist-almuerzo-salida" value="13:00">
+                                     </div>
+                                     <div class="form-group">
+                                         <label for="asist-almuerzo-entrada">Regreso Almuerzo (Estándar 2:00 PM)</label>
+                                         <input type="time" id="asist-almuerzo-entrada" value="14:00">
+                                     </div>
+                                 </div>
+                                 <div class="form-row">
+                                     <div class="form-group">
+                                         <label for="asist-salida">Hora Salida (Estándar 7:00 PM / Sáb 12:00 PM)</label>
+                                         <input type="time" id="asist-salida" value="19:00">
+                                     </div>
+                                 </div>
+                                 <button type="button" class="btn btn-secondary btn-sm" onclick="procesarAsistenciaDiaria()" style="width: 100%; margin-top: 0.5rem;">➕ Procesar y Acumular Horas</button>
+                             </div>
+
+                             <!-- 2. Asistente Turno Amanecida -->
+                             <div id="asist-amanecida" class="asistente-panel" style="display: none;">
+                                 <p class="asistente-help">Calcula amanecidas de 28 horas u horarios continuos (ej: entra Miércoles 7:00 AM y sale Jueves 11:00 AM). Separa horas extras normales 1.0x de las horas dobles 2.0x nocturnas.</p>
+                                 <div class="form-row">
+                                     <div class="form-group">
+                                         <label for="asist-ama-dia-entrada">Día de Entrada</label>
+                                         <select id="asist-ama-dia-entrada">
+                                             <option value="L-V">Lunes a Viernes</option>
+                                             <option value="Sabado">Sábado</option>
+                                         </select>
+                                     </div>
+                                     <div class="form-group">
+                                         <label for="asist-ama-hora-entrada">Hora Entrada (ej: 07:00 AM)</label>
+                                         <input type="time" id="asist-ama-hora-entrada" value="07:00">
+                                     </div>
+                                 </div>
+                                 <div class="form-row">
+                                     <div class="form-group">
+                                         <label for="asist-ama-hora-salida">Hora Salida Día Siguiente (ej: 11:00 AM)</label>
+                                         <input type="time" id="asist-ama-hora-salida" value="11:00">
+                                     </div>
+                                 </div>
+                                 <button type="button" class="btn btn-secondary btn-sm" onclick="procesarAmanecida()" style="width: 100%; margin-top: 0.5rem;">⚡ Procesar y Acumular Amanecida</button>
+                             </div>
 
                             <div class="form-group">
                                 <label for="calc-observaciones">Observaciones (Opcional)</label>
@@ -282,7 +359,7 @@
                                     <span>EGRESOS (S/.)</span>
                                 </div>
                                 <div class="bol-row">
-                                    <span>Pago de Quincena Estándar</span>
+                                    <span id="bol-concepto-base">Pago de Quincena Estándar</span>
                                     <span id="bol-ingreso-quincena">S/.0.00</span>
                                     <span>-</span>
                                 </div>
@@ -646,22 +723,18 @@
             } else {
                 calcAfp.value = emp.afpPago.toFixed(2);
             }
+
+            // Ocultar / Mostrar campo de días trabajados
+            const rowDias = document.getElementById('row-dias-trabajados');
+            if (period === 'Diario') {
+                rowDias.style.display = 'flex';
+            } else {
+                rowDias.style.display = 'none';
+            }
         }
 
         // Realizar cálculos y generar boleta en pantalla
         function calculateAndSaveSlip() {
-            const empId = calcEmployeeSelect.value;
-            if (!empId) {
-                alert('Por favor selecciona un empleado.');
-                return;
-            }
-
-            const emp = employees.find(e => e.id === empId);
-            const mes = document.getElementById('calc-month').value;
-            const periodo = calcPeriod.value;
-            const salary = parseFloat(calcSalary.value);
-            const hourlyRate = (salary / 30) / 8;
-            
             // Valores ingresados
             const qtyHeNormal = parseFloat(document.getElementById('calc-he-normal').value) || 0;
             const qtyHeDomingo = parseFloat(document.getElementById('calc-he-domingo').value) || 0; // Doble / Amanecida
@@ -671,14 +744,26 @@
             const observaciones = document.getElementById('calc-observaciones').value.trim();
 
             // Fórmulas de cálculo de ingresos y egresos
-            const pagoQuincena = salary / 2; // Quincena estándar es la mitad del sueldo
+            let pagoPeriodoBase = salary / 2; // Por defecto quincenal/cierre
+            let conceptoBaseText = "Pago de Quincena Estándar";
+
+            if (periodo === 'Semanal') {
+                pagoPeriodoBase = (salary / 30) * 7;
+                conceptoBaseText = "Pago Semanal Estándar";
+            } else if (periodo === 'Diario') {
+                const dias = parseFloat(document.getElementById('calc-dias-trabajados').value) || 0;
+                pagoPeriodoBase = (salary / 30) * dias;
+                conceptoBaseText = `Pago Diario Estándar (${dias} días)`;
+            } else if (periodo === 'Cierre de Mes') {
+                conceptoBaseText = "Pago Cierre de Mes (Básico)";
+            }
             
             const ingresoHeNormal = qtyHeNormal * hourlyRate;
             const ingresoHeDomingo = qtyHeDomingo * (hourlyRate * 2); // Doble / Amanecida 2x
             
             const egresoTardanza = qtyTardanza * hourlyRate;
 
-            const totalIngresos = pagoQuincena + ingresoHeNormal + ingresoHeDomingo;
+            const totalIngresos = pagoPeriodoBase + ingresoHeNormal + ingresoHeDomingo;
             const totalEgresos = egresoTardanza + afpVal + prestamos;
             const netoPagar = totalIngresos - totalEgresos;
 
@@ -692,7 +777,8 @@
             document.getElementById('bol-sueldo-base').textContent = `S/.${salary.toFixed(2)}`;
 
             // Ingresos
-            document.getElementById('bol-ingreso-quincena').textContent = `S/.${pagoQuincena.toFixed(2)}`;
+            document.getElementById('bol-concepto-base').textContent = conceptoBaseText;
+            document.getElementById('bol-ingreso-quincena').textContent = `S/.${pagoPeriodoBase.toFixed(2)}`;
             
             document.getElementById('bol-qty-he-normal').textContent = qtyHeNormal;
             document.getElementById('bol-ingreso-he-normal').textContent = `S/.${ingresoHeNormal.toFixed(2)}`;
@@ -800,6 +886,172 @@
 
         // Inicialización
         switchTab('tab-dashboard');
+        // --- FUNCIONES DE LOS ASISTENTES DE CÁLCULO ---
+        function switchAsistente(panelId) {
+            // Ocultar todos los paneles
+            document.getElementById('asist-asistencia').style.display = 'none';
+            document.getElementById('asist-amanecida').style.display = 'none';
+            document.getElementById('tab-btn-asistencia').classList.remove('active');
+            document.getElementById('tab-btn-amanecida').classList.remove('active');
+
+            // Mostrar el seleccionado
+            document.getElementById(panelId).style.display = 'block';
+            if (panelId === 'asist-asistencia') {
+                document.getElementById('tab-btn-asistencia').classList.add('active');
+            } else {
+                document.getElementById('tab-btn-amanecida').classList.add('active');
+            }
+        }
+
+        function timeToMinutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        function procesarAsistenciaDiaria() {
+            const diaSemana = document.getElementById('asist-dia-semana').value;
+            const entradaStr = document.getElementById('asist-entrada').value;
+            const almSalidaStr = document.getElementById('asist-almuerzo-salida').value;
+            const almEntradaStr = document.getElementById('asist-almuerzo-entrada').value;
+            const salidaStr = document.getElementById('asist-salida').value;
+
+            if (!entradaStr || !salidaStr || !almSalidaStr || !almEntradaStr) {
+                alert('Por favor completa todas las horas en el asistente de asistencia.');
+                return;
+            }
+
+            const entrada = timeToMinutes(entradaStr);
+            const almuerzoSalida = timeToMinutes(almSalidaStr);
+            const almuerzoEntrada = timeToMinutes(almEntradaStr);
+            const salida = timeToMinutes(salidaStr);
+
+            // 1. Duración del Almuerzo (Estándar 1 hora / 60 minutos)
+            const duracionAlmuerzo = almuerzoEntrada - almuerzoSalida;
+            const tardanzaAlmuerzo = Math.max(0, duracionAlmuerzo - 60);
+
+            // 2. Tardanza de Entrada (Estándar 9:00 AM / 540 minutos)
+            const tardanzaEntrada = Math.max(0, entrada - 540);
+
+            // Tardanza Total del día en minutos
+            const tardanzaTotal = tardanzaEntrada + tardanzaAlmuerzo;
+
+            // 3. Horas Extras y Salida Estándar
+            let salidaEstandar = 1140; // L-V: 7:00 PM (19:00 = 1140 minutos)
+            if (diaSemana === 'Sabado') {
+                salidaEstandar = 720; // Sábado: 12:00 PM (12:00 = 720 minutos)
+            }
+
+            let heNormalMin = 0;
+            let heDobleMin = 0;
+            let tardanzaNetaMin = 0;
+
+            if (diaSemana === 'Domingo') {
+                // Domingo todo lo trabajado (menos almuerzo) es doble (2.0x)
+                const tiempoTrabajado = (salida - entrada) - duracionAlmuerzo;
+                heDobleMin = Math.max(0, tiempoTrabajado);
+            } else {
+                // Lunes a Sábado:
+                // Tiempo extra trabajado después de la salida estándar
+                const tiempoExtraTrabajado = Math.max(0, salida - salidaEstandar);
+
+                if (tiempoExtraTrabajado >= tardanzaTotal) {
+                    // El tiempo extra compensa por completo la tardanza, y el exceso es hora extra neta
+                    heNormalMin = tiempoExtraTrabajado - tardanzaTotal;
+                    tardanzaNetaMin = 0;
+                } else {
+                    // El tiempo extra compensa solo una parte de la tardanza, y el saldo queda como tardanza neta a descontar
+                    heNormalMin = 0;
+                    tardanzaNetaMin = tardanzaTotal - tiempoExtraTrabajado;
+                }
+            }
+
+            // Convertir minutos a horas decimales
+            const heNormalHrs = parseFloat((heNormalMin / 60).toFixed(2));
+            const heDobleHrs = parseFloat((heDobleMin / 60).toFixed(2));
+            const tardanzaHrs = parseFloat((tardanzaNetaMin / 60).toFixed(2));
+
+            // Sumar acumulativamente a los inputs principales del formulario
+            const inputHeNormal = document.getElementById('calc-he-normal');
+            const inputHeDoble = document.getElementById('calc-he-domingo');
+            const inputTardanza = document.getElementById('calc-tardanzas');
+
+            const currentHeNormal = parseFloat(inputHeNormal.value) || 0;
+            const currentHeDoble = parseFloat(inputHeDoble.value) || 0;
+            const currentTardanza = parseFloat(inputTardanza.value) || 0;
+
+            inputHeNormal.value = (currentHeNormal + heNormalHrs).toFixed(2);
+            inputHeDoble.value = (currentHeDoble + heDobleHrs).toFixed(2);
+            inputTardanza.value = (currentTardanza + tardanzaHrs).toFixed(2);
+
+            let msg = `Cálculo de asistencia del día procesado con éxito:\n`;
+            if (tardanzaTotal > 0) msg += `- Tardanza inicial cometida: ${tardanzaTotal} min.\n`;
+            if (salida > salidaEstandar && diaSemana !== 'Domingo') msg += `- Tiempo de compensación trabajado: ${salida - salidaEstandar} min.\n`;
+            msg += `--------------------------------------------------\n`;
+            msg += `- H.E. Normales agregadas (1x): +${heNormalHrs} hrs.\n`;
+            if (heDobleHrs > 0) msg += `- H.E. Dobles agregadas (2x): +${heDobleHrs} hrs.\n`;
+            msg += `- Tardanza Neta acumulada (descuento): +${tardanzaHrs} hrs.\n`;
+            msg += `\nLos valores se han acumulado en la calculadora.`;
+            
+            alert(msg);
+        }
+
+        function procesarAmanecida() {
+            const diaEntrada = document.getElementById('asist-ama-dia-entrada').value;
+            const horaEntradaStr = document.getElementById('asist-ama-hora-entrada').value;
+            const horaSalidaStr = document.getElementById('asist-ama-hora-salida').value;
+
+            if (!horaEntradaStr || !horaSalidaStr) {
+                alert('Por favor completa todas las horas del asistente de amanecida.');
+                return;
+            }
+
+            const horaEntrada = timeToMinutes(horaEntradaStr);
+            const horaSalidaSiguiente = timeToMinutes(horaSalidaStr);
+
+            // 1. Horas de entrada previa (antes de las 9:00 AM del primer día)
+            let heNormalMin = 0;
+            if (horaEntrada < 540) { // 9:00 AM = 540 minutos
+                heNormalMin = 540 - horaEntrada;
+            }
+
+            // 2. Horas de Amanecida Doble (a partir de la salida regular)
+            // L-V salida regular: 7:00 PM (1140 minutos)
+            // Sábado salida regular: 12:00 PM (720 minutos)
+            let salidaRegular = 1140;
+            if (diaEntrada === 'Sabado') {
+                salidaRegular = 720;
+            }
+
+            // Tramo 1: Desde la salida regular del primer día hasta la medianoche (24:00 = 1440 min)
+            const amaTramo1 = 1440 - salidaRegular;
+
+            // Tramo 2: Desde la medianoche hasta la hora de salida del día siguiente
+            const amaTramo2 = horaSalidaSiguiente;
+
+            const heDobleMin = amaTramo1 + amaTramo2;
+
+            // Convertir a horas decimales
+            const heNormalHrs = parseFloat((heNormalMin / 60).toFixed(2));
+            const heDobleHrs = parseFloat((heDobleMin / 60).toFixed(2));
+
+            // Sumar acumulativamente a los inputs principales
+            const inputHeNormal = document.getElementById('calc-he-normal');
+            const inputHeDoble = document.getElementById('calc-he-domingo');
+
+            const currentHeNormal = parseFloat(inputHeNormal.value) || 0;
+            const currentHeDoble = parseFloat(inputHeDoble.value) || 0;
+
+            inputHeNormal.value = (currentHeNormal + heNormalHrs).toFixed(2);
+            inputHeDoble.value = (currentHeDoble + heDobleHrs).toFixed(2);
+
+            let msg = `Cálculo de amanecida procesado con éxito:\n`;
+            msg += `- Jornada regular diurna (Día 1): Cubierta por su sueldo básico.\n`;
+            if (heNormalHrs > 0) msg += `- Entrada anticipada (extras normales 1x): +${heNormalHrs} hrs.\n`;
+            msg += `- Tramo nocturno/amanecida (horas dobles 2x): +${heDobleHrs} hrs.\n`;
+            msg += `\nSe han sumado de forma automática y acumulado a la boleta.`;
+
+            alert(msg);
+        }
     </script>
 </body>
 </html>

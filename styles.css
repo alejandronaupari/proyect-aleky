@@ -904,6 +904,53 @@ body {
     }
 }
 
+/* 🧮 Asistentes Auxiliares de Asistencia (CSS) */
+.asistentes-tabs {
+    display: flex;
+    gap: 0.2rem;
+    margin-top: 1rem;
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.asistente-tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-family);
+    font-weight: 600;
+    font-size: 0.78rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.asistente-tab-btn:hover {
+    color: var(--primary);
+}
+
+.asistente-tab-btn.active {
+    color: var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+
+.asistente-panel {
+    background-color: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.asistente-help {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 0.8rem;
+}
+
 /* ==========================================================================
    🖨️ CONFIGURACIÓN DE IMPRESIÓN EXCLUSIVA
    ========================================================================== */
