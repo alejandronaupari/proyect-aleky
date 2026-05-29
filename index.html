@@ -103,6 +103,36 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 📅 REGISTRO SEMANAL DE ASISTENCIA (Digitalización de Hoja Física) -->
+                <div class="card attendance-card" style="margin-top: 1.5rem;">
+                    <div class="boleta-header-action" style="padding: 0 0 1rem 0; border-bottom: 1px solid var(--border-color); background: transparent; margin-bottom: 1rem;">
+                        <div>
+                            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">Planilla de Asistencia Semanal</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">Ingresa las horas de entrada y salida de tu personal. Las horas extras se calcularán automáticamente compensando tardanzas, y se pre-cargarán al seleccionar al empleado.</p>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="resetAttendanceToStandard()">🕒 Cargar Horario Estándar</button>
+                    </div>
+                    <div class="table-container" style="box-shadow: none; border-radius: var(--radius-sm); overflow-x: auto;">
+                        <table class="premium-table attendance-table" style="min-width: 900px;">
+                            <thead>
+                                <tr>
+                                    <th style="min-width: 180px;">Trabajador</th>
+                                    <th style="text-align: center;">Lunes 25</th>
+                                    <th style="text-align: center;">Martes 26</th>
+                                    <th style="text-align: center;">Miércoles 27</th>
+                                    <th style="text-align: center;">Jueves 28</th>
+                                    <th style="text-align: center;">Viernes 29</th>
+                                    <th style="text-align: center;">Sábado 30</th>
+                                    <th style="text-align: center; background-color: #f1f5f9; min-width: 150px;">Cómputo Semanal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendance-table-body">
+                                <!-- Inyectado dinámicamente con inputs de Entrada / Salida -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
 
             <!-- 👥 VISTA 2: CONTROL DE PERSONAL (EMPLEADOS) -->
@@ -113,10 +143,16 @@
                             <h1>Control de Personal</h1>
                             <p>Base de datos de trabajadores activos y retirados.</p>
                         </div>
-                        <button class="btn btn-primary" onclick="showAddEmployeeModal()">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                            Nuevo Empleado
-                        </button>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button class="btn btn-secondary" onclick="restoreDefaultEmployees()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><path d="M23 4v6h-6"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                                Restaurar Personal por Defecto
+                            </button>
+                            <button class="btn btn-primary" onclick="showAddEmployeeModal()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                Nuevo Empleado
+                            </button>
+                        </div>
                     </div>
                 </header>
 
@@ -504,9 +540,69 @@
         </div>
     </div>
 
+    <!-- ✏️ MODAL: EDITAR EMPLEADO -->
+    <div id="edit-employee-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>Editar Datos de Empleado</h3>
+            <form id="edit-employee-form" class="modal-form">
+                <input type="hidden" id="edit-emp-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-emp-nombre">Nombre</label>
+                        <input type="text" id="edit-emp-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-emp-apellidos">Apellidos</label>
+                        <input type="text" id="edit-emp-apellidos" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-emp-dni">DNI / Pasaporte</label>
+                        <input type="text" id="edit-emp-dni" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-emp-afp">Nombre AFP</label>
+                        <select id="edit-emp-afp">
+                            <option value="NINGUNA">NINGUNA</option>
+                            <option value="SPP HABITAT">SPP HABITAT</option>
+                            <option value="SPP INTEGRA">SPP INTEGRA</option>
+                            <option value="SPP PRIMA">SPP PRIMA</option>
+                            <option value="ONP">ONP</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-emp-salary">Sueldo Diversas (Pactado) (S/.)</label>
+                        <input type="number" step="0.01" id="edit-emp-salary" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-emp-registered">Sueldo Registrado (Planilla) (S/.)</label>
+                        <input type="number" step="0.01" id="edit-emp-registered">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-emp-afp-pago">Pago AFP Fijo (S/.)</label>
+                        <input type="number" step="0.01" id="edit-emp-afp-pago">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-emp-fecha-ingreso">Fecha de Ingreso</label>
+                        <input type="date" id="edit-emp-fecha-ingreso">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideEditEmployeeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Cargar Lógica del Sistema -->
     <script>
-        // --- 👥 BASE DE DATOS DE EMPLEADOS PRECARGADOS (DESDE EXCEL) ---
+        // --- 👥 BASE DE DATOS DE EMPLEADOS PRECARGADOS (DESDE EXCEL RESTAURADOS) ---
         const initialEmployees = [
             // ACTIVOS (GASTO PERSONAL)
             { id: "1", nombre: "KELLY SUSSAN", apellidos: "MANYARI CANALES", dni: "47079927", afp: "NINGUNA", salaryDiversas: 2500, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
@@ -517,6 +613,7 @@
             { id: "6", nombre: "JESUS DAVID", apellidos: "CORONEL REMON", dni: "72191261", afp: "SPP INTEGRA", salaryDiversas: 1800, salaryRegistered: 1025, afpPago: 109.18, fechaIngreso: "-", status: "activo" },
             { id: "7", nombre: "FABIAN STHEPHANO", apellidos: "BARBADILLO BAZAN", dni: "75852648", afp: "NINGUNA", salaryDiversas: 1400, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
             { id: "8", nombre: "RUDY SERGIO", apellidos: "GUTIERREZ MENDOZA", dni: "10121460", afp: "NINGUNA", salaryDiversas: 1500, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
+            { id: "9", nombre: "LUKE", apellidos: "DIVERSAS", dni: "88990011", afp: "NINGUNA", salaryDiversas: 1500, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
             
             // RETIRADOS (RETIRADO PERSONAL)
             { id: "r1", nombre: "FREYLIX DAVID", apellidos: "SALAS MEDINA", dni: "143108324", afp: "SPP PRIMA", salaryDiversas: 1600, salaryRegistered: 930, afpPago: 110.85, fechaIngreso: "2018-04-11", status: "retirado" },
@@ -528,8 +625,108 @@
             { id: "r7", nombre: "OSCAR MAURICIO", apellidos: "ZUÑIGA PALACIOS", dni: "72921258", afp: "NINGUNA", salaryDiversas: 1300, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "retirado" }
         ];
 
-        // Inicializar Datos en LocalStorage
-        let employees = JSON.parse(localStorage.getItem('rrhh_employees')) || initialEmployees;
+        // Digitalización de la planilla semanal manuscrita de Mayo (Desde la foto del usuario)
+        const initialAttendance = {
+            "1": {
+                "Lunes": { in: "09:15", out: "19:25" },
+                "Martes": { in: "10:00", out: "21:00" },
+                "Miercoles": { in: "09:40", out: "20:10" },
+                "Jueves": { in: "21:20", out: "10:00" }, // Amanecida
+                "Viernes": { in: "09:00", out: "19:00" },
+                "Sabado": { in: "09:00", out: "12:00" }
+            },
+            "2": {
+                "Lunes": { in: "10:25", out: "19:10" },
+                "Martes": { in: "09:00", out: "19:20" },
+                "Miercoles": { in: "08:50", out: "19:16" },
+                "Jueves": { in: "08:58", out: "19:10" },
+                "Viernes": { in: "08:20", out: "19:00" },
+                "Sabado": { in: "09:00", out: "12:00" }
+            },
+            "3": {
+                "Lunes": { in: "", out: "" },
+                "Martes": { in: "", out: "" },
+                "Miercoles": { in: "", out: "" },
+                "Jueves": { in: "", out: "" },
+                "Viernes": { in: "", out: "" },
+                "Sabado": { in: "", out: "" }
+            },
+            "4": {
+                "Lunes": { in: "10:55", out: "19:05" },
+                "Martes": { in: "08:35", out: "18:35" },
+                "Miercoles": { in: "08:28", out: "18:35" },
+                "Jueves": { in: "09:58", out: "18:30" },
+                "Viernes": { in: "08:20", out: "19:00" },
+                "Sabado": { in: "09:00", out: "12:00" }
+            },
+            "5": {
+                "Lunes": { in: "10:20", out: "19:00" },
+                "Martes": { in: "10:50", out: "19:10" },
+                "Miercoles": { in: "10:20", out: "19:00" },
+                "Jueves": { in: "10:30", out: "19:20" },
+                "Viernes": { in: "", out: "" },
+                "Sabado": { in: "", out: "" }
+            },
+            "6": {
+                "Lunes": { in: "08:55", out: "20:16" },
+                "Martes": { in: "08:39", out: "16:02" },
+                "Miercoles": { in: "08:50", out: "19:00" },
+                "Jueves": { in: "11:33", out: "19:00" },
+                "Viernes": { in: "10:40", out: "19:00" },
+                "Sabado": { in: "", out: "" }
+            },
+            "7": {
+                "Lunes": { in: "09:16", out: "19:13" },
+                "Martes": { in: "09:37", out: "19:49" },
+                "Miercoles": { in: "09:27", out: "20:35" },
+                "Jueves": { in: "09:19", out: "21:13" },
+                "Viernes": { in: "09:19", out: "19:00" },
+                "Sabado": { in: "", out: "" }
+            },
+            "8": {
+                "Lunes": { in: "07:00", out: "20:14" },
+                "Martes": { in: "09:00", out: "19:30" },
+                "Miercoles": { in: "07:00", out: "19:40" },
+                "Jueves": { in: "07:00", out: "19:20" },
+                "Viernes": { in: "07:20", out: "19:00" },
+                "Sabado": { in: "", out: "" }
+            },
+            "9": {
+                "Lunes": { in: "08:50", out: "19:01" },
+                "Martes": { in: "08:49", out: "19:00" },
+                "Miercoles": { in: "08:55", out: "19:10" },
+                "Jueves": { in: "08:20", out: "19:02" },
+                "Viernes": { in: "08:30", out: "19:00" },
+                "Sabado": { in: "", out: "" }
+            }
+        };
+
+        // Inicializar Datos en LocalStorage con fusión segura
+        let employees = JSON.parse(localStorage.getItem('rrhh_employees'));
+        if (!employees) {
+            employees = [...initialEmployees];
+            localStorage.setItem('rrhh_employees', JSON.stringify(employees));
+        } else {
+            // Fusión segura: asegurar que todos los de initialEmployees estén presentes por nombre/apellidos o dni
+            let changed = false;
+            initialEmployees.forEach(initEmp => {
+                const exists = employees.some(e => e.nombre === initEmp.nombre && e.apellidos === initEmp.apellidos) || employees.some(e => e.dni === initEmp.dni);
+                if (!exists) {
+                    employees.push(initEmp);
+                    changed = true;
+                }
+            });
+            if (changed) {
+                localStorage.setItem('rrhh_employees', JSON.stringify(employees));
+            }
+        }
+        
+        let attendance = JSON.parse(localStorage.getItem('rrhh_attendance'));
+        if (!attendance || Object.keys(attendance).length === 0) {
+            attendance = initialAttendance;
+            localStorage.setItem('rrhh_attendance', JSON.stringify(attendance));
+        }
+
         let slips = JSON.parse(localStorage.getItem('rrhh_slips')) || [];
 
         function saveToStorage() {
@@ -554,6 +751,7 @@
             if (tabId === 'tab-employees') renderEmployeesTable();
             if (tabId === 'tab-calculator') populateCalculatorOptions();
             if (tabId === 'tab-history') renderHistoryTable();
+            if (tabId === 'tab-attendance') renderAttendanceGrid();
         }
 
         navBtns.forEach(btn => {
@@ -588,13 +786,17 @@
                 tr.innerHTML = `
                     <td><strong>${emp.nombre} ${emp.apellidos}</strong></td>
                     <td>${emp.dni}</td>
-                    <td>${emp.afp}</td>
+                    <td>
+                        <strong>${emp.afp}</strong>
+                        ${emp.afpPago > 0 ? `<span style="font-size:0.75rem; color:var(--text-muted); display:block; margin-top:0.1rem;">S/.${emp.afpPago.toFixed(2)}</span>` : ''}
+                    </td>
                     <td>S/.${emp.salaryDiversas.toFixed(2)}</td>
                     <td>S/.${emp.salaryRegistered.toFixed(2)}</td>
                     <td><span class="status-badge ${emp.status === 'activo' ? 'active' : 'retired'}">${emp.status.toUpperCase()}</span></td>
                     <td>
-                        <button class="btn btn-secondary btn-sm" onclick="toggleEmployeeStatus('${emp.id}')">🔄 Alternar Estado</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${emp.id}')">🗑️ Eliminar</button>
+                        <button class="btn btn-primary btn-sm" onclick="showEditEmployeeModal('${emp.id}')">✏️</button>
+                        <button class="btn btn-secondary btn-sm" onclick="toggleEmployeeStatus('${emp.id}')">🔄</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${emp.id}')">🗑️</button>
                     </td>
                 `;
                 employeesTableBody.appendChild(tr);
@@ -620,6 +822,81 @@
                 renderEmployeesTable();
             }
         }
+
+        // --- ✏️ MODAL DE EDICIÓN DE EMPLEADO ---
+        const editEmployeeModal = document.getElementById('edit-employee-modal');
+        const editEmployeeForm = document.getElementById('edit-employee-form');
+
+        function showEditEmployeeModal(id) {
+            const emp = employees.find(e => e.id === id);
+            if (!emp) return;
+
+            document.getElementById('edit-emp-id').value = emp.id;
+            document.getElementById('edit-emp-nombre').value = emp.nombre;
+            document.getElementById('edit-emp-apellidos').value = emp.apellidos;
+            document.getElementById('edit-emp-dni').value = emp.dni;
+            document.getElementById('edit-emp-afp').value = emp.afp;
+            document.getElementById('edit-emp-salary').value = emp.salaryDiversas;
+            document.getElementById('edit-emp-registered').value = emp.salaryRegistered;
+            document.getElementById('edit-emp-afp-pago').value = emp.afpPago;
+            
+            // Convertir fecha de ingreso DD/MM/AAAA a formato AAAA-MM-DD para input date
+            if (emp.fechaIngreso && emp.fechaIngreso !== '-') {
+                const parts = emp.fechaIngreso.split('/');
+                if (parts.length === 3) {
+                    document.getElementById('edit-emp-fecha-ingreso').value = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+                }
+            } else {
+                document.getElementById('edit-emp-fecha-ingreso').value = '';
+            }
+
+            editEmployeeModal.style.display = 'flex';
+        }
+
+        function hideEditEmployeeModal() {
+            editEmployeeModal.style.display = 'none';
+        }
+
+        editEmployeeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-emp-id').value;
+            const nombre = document.getElementById('edit-emp-nombre').value.toUpperCase().trim();
+            const apellidos = document.getElementById('edit-emp-apellidos').value.toUpperCase().trim();
+            const dni = document.getElementById('edit-emp-dni').value.trim();
+            const afp = document.getElementById('edit-emp-afp').value;
+            const salary = parseFloat(document.getElementById('edit-emp-salary').value);
+            const registered = parseFloat(document.getElementById('edit-emp-registered').value) || 0;
+            const afpPago = parseFloat(document.getElementById('edit-emp-afp-pago').value) || 0;
+            const dateInput = document.getElementById('edit-emp-fecha-ingreso').value;
+            const fechaIngreso = dateInput ? dateInput.split('-').reverse().join('/') : '-';
+
+            employees = employees.map(emp => {
+                if (emp.id === id) {
+                    return {
+                        ...emp,
+                        nombre: nombre,
+                        apellidos: apellidos,
+                        dni: dni,
+                        afp: afp,
+                        salaryDiversas: salary,
+                        salaryRegistered: registered,
+                        afpPago: afpPago,
+                        fechaIngreso: fechaIngreso
+                    };
+                }
+                return emp;
+            });
+
+            saveToStorage();
+            hideEditEmployeeModal();
+            renderEmployeesTable();
+            populateCalculatorOptions();
+            
+            // Si el empleado editado es el que estaba actualmente seleccionado en la calculadora, forzar recarga
+            if (calcEmployeeSelect.value === id) {
+                calcEmployeeSelect.dispatchEvent(new Event('change'));
+            }
+        });
 
         // --- ➕ MODAL DE NUEVO EMPLEADO ---
         const addEmployeeModal = document.getElementById('add-employee-modal');
@@ -697,15 +974,17 @@
             if (emp) {
                 calcSalary.value = emp.salaryDiversas.toFixed(2);
                 
-                // Tarifa por hora = (Sueldo / 30) / 8
+                // Tarifa por hora = (Sueldo Pactado Diversas / 30) / 8
                 const hourlyRate = (emp.salaryDiversas / 30) / 8;
                 calcHourlyRate.value = hourlyRate.toFixed(4);
 
                 // Asignar el AFP que tiene configurado
                 calcAfp.value = emp.afpPago.toFixed(2);
                 
-                // Si es Primera Quincena, el AFP y las HE de cierre de mes suelen estar en 0
                 adjustInputsForPeriod();
+
+                // Jalar asistencia acumulada desde el Dashboard de forma automática
+                prefillHoursFromAttendance(empId);
             }
         });
 
@@ -731,10 +1010,20 @@
             } else {
                 rowDias.style.display = 'none';
             }
+            calculateAndSaveSlip(false);
         }
 
         // Realizar cálculos y generar boleta en pantalla
-        function calculateAndSaveSlip() {
+        function calculateAndSaveSlip(saveHistory = true) {
+            const empId = calcEmployeeSelect.value;
+            if (!empId) return;
+
+            const emp = employees.find(e => e.id === empId);
+            const mes = document.getElementById('calc-month').value;
+            const periodo = calcPeriod.value;
+            const salary = parseFloat(calcSalary.value) || 0;
+            const hourlyRate = (salary / 30) / 8;
+
             // Valores ingresados
             const qtyHeNormal = parseFloat(document.getElementById('calc-he-normal').value) || 0;
             const qtyHeDomingo = parseFloat(document.getElementById('calc-he-domingo').value) || 0; // Doble / Amanecida
@@ -812,6 +1101,9 @@
                 document.getElementById('bol-nota-observaciones').style.display = 'none';
             }
 
+            // DETENERSE SI ES SOLO PREVISUALIZACIÓN
+            if (!saveHistory) return;
+
             // --- GUARDAR EN EL HISTORIAL ---
             const newSlip = {
                 id: Date.now().toString(),
@@ -869,7 +1161,7 @@
                     <td>S/.${slip.egresos.toFixed(2)}</td>
                     <td><strong class="color-cyan">S/.${slip.neto.toFixed(2)}</strong></td>
                     <td>
-                        <button class="btn btn-danger btn-sm" onclick="deleteSlip('${slip.id}')">🗑️ Eliminar</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteSlip('${slip.id}')">🗑️</button>
                     </td>
                 `;
                 historyTableBody.appendChild(tr);
@@ -884,17 +1176,206 @@
             }
         }
 
+        // --- 📅 REGISTRO DE ASISTENCIA SEMANAL ---
+        let attendance = JSON.parse(localStorage.getItem('rrhh_attendance')) || {};
+
+        function saveAttendance() {
+            localStorage.setItem('rrhh_attendance', JSON.stringify(attendance));
+        }
+
+        function resetAttendanceToStandard() {
+            if (confirm('¿Deseas restablecer las horas de asistencia de todos los trabajadores al horario estándar de la imprenta (Lun-Vie 9-7, Sáb 9-12)?')) {
+                employees.filter(e => e.status === 'activo').forEach(emp => {
+                    attendance[emp.id] = {
+                        "Lunes": { in: "09:00", out: "19:00" },
+                        "Martes": { in: "09:00", out: "19:00" },
+                        "Miercoles": { in: "09:00", out: "19:00" },
+                        "Jueves": { in: "09:00", out: "19:00" },
+                        "Viernes": { in: "09:00", out: "19:00" },
+                        "Sabado": { in: "09:00", out: "12:00" }
+                    };
+                });
+                saveAttendance();
+                renderAttendanceGrid();
+                if (calcEmployeeSelect.value) {
+                    prefillHoursFromAttendance(calcEmployeeSelect.value);
+                }
+            }
+        }
+
+        function restoreDefaultEmployees() {
+            if (confirm('¿Estás seguro de que deseas restablecer la base de datos de personal y planilla de asistencia a su estado inicial por defecto? Se reinstaurarán todos los empleados originales y se digitalizarán los datos reales de la foto manuscrita.')) {
+                employees = [...initialEmployees];
+                attendance = JSON.parse(JSON.stringify(initialAttendance));
+                saveToStorage();
+                saveAttendance();
+                renderEmployeesTable();
+                populateCalculatorOptions();
+                renderAttendanceGrid();
+                if (calcEmployeeSelect.value) {
+                    calcEmployeeSelect.dispatchEvent(new Event('change'));
+                }
+                alert('Base de datos y planilla de asistencia de Mayo restablecidas y recalculadas con éxito.');
+            }
+        }
+
+        function renderAttendanceGrid() {
+            const body = document.getElementById('attendance-table-body');
+            if (!body) return;
+            body.innerHTML = '';
+
+            const activeEmployees = employees.filter(e => e.status === 'activo');
+            if (activeEmployees.length === 0) {
+                body.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 1.5rem;">No hay personal activo registrado.</td></tr>';
+                return;
+            }
+
+            activeEmployees.forEach(emp => {
+                if (!attendance[emp.id]) {
+                    attendance[emp.id] = {
+                        "Lunes": { in: "", out: "" },
+                        "Martes": { in: "", out: "" },
+                        "Miercoles": { in: "", out: "" },
+                        "Jueves": { in: "", out: "" },
+                        "Viernes": { in: "", out: "" },
+                        "Sabado": { in: "", out: "" }
+                    };
+                }
+
+                const empAtt = attendance[emp.id];
+                const totals = calculateWeeklyAttendance(emp.id);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <strong style="color: var(--text-primary); font-size: 0.85rem; display: block;">${emp.nombre} ${emp.apellidos}</strong>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); display: block; margin-top: 0.1rem;">Diversas: S/.${emp.salaryDiversas} • Reg: S/.${emp.salaryRegistered}</span>
+                    </td>
+                    ${["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"].map(dia => {
+                        const dayData = empAtt[dia] || { in: "", out: "" };
+                        return `
+                            <td style="padding: 0.5rem 0.3rem; text-align: center;">
+                                <div style="display: flex; flex-direction: column; gap: 0.25rem; align-items: center;">
+                                    <input type="time" class="att-time" value="${dayData.in}" onchange="updateAttendanceCell('${emp.id}', '${dia}', 'in', this.value)" style="padding: 0.2rem; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px; width: 68px; text-align: center;">
+                                    <input type="time" class="att-time" value="${dayData.out}" onchange="updateAttendanceCell('${emp.id}', '${dia}', 'out', this.value)" style="padding: 0.2rem; font-size: 0.75rem; border: 1px solid #cbd5e1; border-radius: 4px; width: 68px; text-align: center;">
+                                </div>
+                            </td>
+                        `;
+                    }).join('')}
+                    <td style="text-align: center; background-color: #f8fafc; border-left: 1px solid var(--border-color); padding: 0.6rem;">
+                        <div style="display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.72rem; text-align: left;">
+                            <span style="display: inline-block; padding: 0.15rem 0.4rem; background-color: #e0f2fe; color: #0369a1; border-radius: 4px; font-weight: 700;">Norm: <strong>${totals.heNormal.toFixed(2)}h</strong></span>
+                            <span style="display: inline-block; padding: 0.15rem 0.4rem; background-color: #f5f3ff; color: #6d28d9; border-radius: 4px; font-weight: 700;">Doble: <strong>${totals.heDoble.toFixed(2)}h</strong></span>
+                            <span style="display: inline-block; padding: 0.15rem 0.4rem; background-color: #fee2e2; color: #b91c1c; border-radius: 4px; font-weight: 700;">Tard: <strong>${totals.tardanzas.toFixed(2)}h</strong></span>
+                        </div>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function updateAttendanceCell(empId, dia, type, val) {
+            if (!attendance[empId]) return;
+            attendance[empId][dia][type] = val;
+
+            // Autocompletar salida estándar si ingresa entrada y la salida está vacía
+            if (type === 'in' && val && !attendance[empId][dia]['out']) {
+                attendance[empId][dia]['out'] = (dia === 'Sabado') ? "12:00" : "19:00";
+            }
+
+            saveAttendance();
+            renderAttendanceGrid();
+            if (calcEmployeeSelect.value === empId) {
+                prefillHoursFromAttendance(empId);
+            }
+        }
+
+        function calculateWeeklyAttendance(empId) {
+            const empAtt = attendance[empId];
+            const result = { heNormal: 0, heDoble: 0, tardanzas: 0 };
+            if (!empAtt) return result;
+
+            ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"].forEach(dia => {
+                const dayData = empAtt[dia];
+                if (!dayData || !dayData.in || !dayData.out) return;
+
+                const entrada = timeToMinutes(dayData.in);
+                const salida = timeToMinutes(dayData.out);
+
+                // 1. Detección de Amanecida / Turno Nocturno (salida < entrada)
+                if (salida < entrada) {
+                    const minutosTrabajados = (1440 - entrada) + salida;
+                    const minutosNetos = minutosTrabajados > 360 ? (minutosTrabajados - 60) : minutosTrabajados; // 1h cena
+                    result.heDoble += minutosNetos / 60;
+                    return;
+                }
+
+                // 2. Horario Diurno Normal Compensatorio (Lun-Vie 9-7, Sáb 9-12)
+                const cubreAlmuerzo = (entrada < 780 && salida > 840);
+                const duracionAlmuerzo = cubreAlmuerzo ? 60 : 0;
+
+                const entradaEstandar = 540; // 9:00 AM
+                let salidaEstandar = 1140; // L-V: 7:00 PM (19:00)
+                let lunchEstandar = 60;
+
+                if (dia === 'Sabado') {
+                    salidaEstandar = 720; // Sábado: 12:00 PM
+                    lunchEstandar = 0;
+                }
+
+                // Horas esperadas de trabajo neta
+                const minutosEsperados = (salidaEstandar - entradaEstandar) - lunchEstandar;
+                
+                // Horas reales trabajadas netas
+                const minutosReales = (salida - entrada) - duracionAlmuerzo;
+
+                // Diferencia neta compensatoria
+                const diferencia = minutosReales - minutosEsperados;
+
+                if (diferencia >= 0) {
+                    result.heNormal += diferencia / 60;
+                } else {
+                    result.tardanzas += Math.abs(diferencia) / 60;
+                }
+            });
+
+            return result;
+        }
+
+        function prefillHoursFromAttendance(empId) {
+            const totals = calculateWeeklyAttendance(empId);
+            document.getElementById('calc-he-normal').value = totals.heNormal.toFixed(2);
+            document.getElementById('calc-he-domingo').value = totals.heDoble.toFixed(2);
+            document.getElementById('calc-tardanzas').value = totals.tardanzas.toFixed(2);
+            calculateAndSaveSlip(false);
+        }
+
+        // Asociar eventos en vivo
+        const liveInputs = [
+            'calc-he-normal', 'calc-he-domingo', 'calc-tardanzas', 
+            'calc-prestamos', 'calc-afp', 'calc-period', 
+            'calc-month', 'calc-dias-trabajados', 'calc-observaciones'
+        ];
+
+        liveInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('input', () => calculateAndSaveSlip(false));
+                input.addEventListener('change', () => calculateAndSaveSlip(false));
+            }
+        });
+
         // Inicialización
         switchTab('tab-dashboard');
+        renderAttendanceGrid();
+
         // --- FUNCIONES DE LOS ASISTENTES DE CÁLCULO ---
         function switchAsistente(panelId) {
-            // Ocultar todos los paneles
             document.getElementById('asist-asistencia').style.display = 'none';
             document.getElementById('asist-amanecida').style.display = 'none';
             document.getElementById('tab-btn-asistencia').classList.remove('active');
             document.getElementById('tab-btn-amanecida').classList.remove('active');
 
-            // Mostrar el seleccionado
             document.getElementById(panelId).style.display = 'block';
             if (panelId === 'asist-asistencia') {
                 document.getElementById('tab-btn-asistencia').classList.add('active');
@@ -925,74 +1406,37 @@
             const almuerzoEntrada = timeToMinutes(almEntradaStr);
             const salida = timeToMinutes(salidaStr);
 
-            // 1. Duración del Almuerzo (Estándar 1 hora / 60 minutos)
             const duracionAlmuerzo = almuerzoEntrada - almuerzoSalida;
             const tardanzaAlmuerzo = Math.max(0, duracionAlmuerzo - 60);
-
-            // 2. Tardanza de Entrada (Estándar 9:00 AM / 540 minutos)
             const tardanzaEntrada = Math.max(0, entrada - 540);
-
-            // Tardanza Total del día en minutos
             const tardanzaTotal = tardanzaEntrada + tardanzaAlmuerzo;
 
-            // 3. Horas Extras y Salida Estándar
-            let salidaEstandar = 1140; // L-V: 7:00 PM (19:00 = 1140 minutos)
-            if (diaSemana === 'Sabado') {
-                salidaEstandar = 720; // Sábado: 12:00 PM (12:00 = 720 minutos)
-            }
-
+            let salidaEstandar = (diaSemana === 'Sabado') ? 720 : 1140;
             let heNormalMin = 0;
             let heDobleMin = 0;
             let tardanzaNetaMin = 0;
 
             if (diaSemana === 'Domingo') {
-                // Domingo todo lo trabajado (menos almuerzo) es doble (2.0x)
-                const tiempoTrabajado = (salida - entrada) - duracionAlmuerzo;
-                heDobleMin = Math.max(0, tiempoTrabajado);
+                heDobleMin = Math.max(0, (salida - entrada) - duracionAlmuerzo);
             } else {
-                // Lunes a Sábado:
-                // Tiempo extra trabajado después de la salida estándar
                 const tiempoExtraTrabajado = Math.max(0, salida - salidaEstandar);
-
                 if (tiempoExtraTrabajado >= tardanzaTotal) {
-                    // El tiempo extra compensa por completo la tardanza, y el exceso es hora extra neta
                     heNormalMin = tiempoExtraTrabajado - tardanzaTotal;
-                    tardanzaNetaMin = 0;
                 } else {
-                    // El tiempo extra compensa solo una parte de la tardanza, y el saldo queda como tardanza neta a descontar
-                    heNormalMin = 0;
                     tardanzaNetaMin = tardanzaTotal - tiempoExtraTrabajado;
                 }
             }
 
-            // Convertir minutos a horas decimales
-            const heNormalHrs = parseFloat((heNormalMin / 60).toFixed(2));
-            const heDobleHrs = parseFloat((heDobleMin / 60).toFixed(2));
-            const tardanzaHrs = parseFloat((tardanzaNetaMin / 60).toFixed(2));
-
-            // Sumar acumulativamente a los inputs principales del formulario
             const inputHeNormal = document.getElementById('calc-he-normal');
             const inputHeDoble = document.getElementById('calc-he-domingo');
             const inputTardanza = document.getElementById('calc-tardanzas');
 
-            const currentHeNormal = parseFloat(inputHeNormal.value) || 0;
-            const currentHeDoble = parseFloat(inputHeDoble.value) || 0;
-            const currentTardanza = parseFloat(inputTardanza.value) || 0;
-
-            inputHeNormal.value = (currentHeNormal + heNormalHrs).toFixed(2);
-            inputHeDoble.value = (currentHeDoble + heDobleHrs).toFixed(2);
-            inputTardanza.value = (currentTardanza + tardanzaHrs).toFixed(2);
-
-            let msg = `Cálculo de asistencia del día procesado con éxito:\n`;
-            if (tardanzaTotal > 0) msg += `- Tardanza inicial cometida: ${tardanzaTotal} min.\n`;
-            if (salida > salidaEstandar && diaSemana !== 'Domingo') msg += `- Tiempo de compensación trabajado: ${salida - salidaEstandar} min.\n`;
-            msg += `--------------------------------------------------\n`;
-            msg += `- H.E. Normales agregadas (1x): +${heNormalHrs} hrs.\n`;
-            if (heDobleHrs > 0) msg += `- H.E. Dobles agregadas (2x): +${heDobleHrs} hrs.\n`;
-            msg += `- Tardanza Neta acumulada (descuento): +${tardanzaHrs} hrs.\n`;
-            msg += `\nLos valores se han acumulado en la calculadora.`;
+            inputHeNormal.value = (parseFloat(inputHeNormal.value || 0) + (heNormalMin / 60)).toFixed(2);
+            inputHeDoble.value = (parseFloat(inputHeDoble.value || 0) + (heDobleMin / 60)).toFixed(2);
+            inputTardanza.value = (parseFloat(inputTardanza.value || 0) + (tardanzaNetaMin / 60)).toFixed(2);
             
-            alert(msg);
+            calculateAndSaveSlip(false);
+            alert('Cálculo procesado.');
         }
 
         function procesarAmanecida() {

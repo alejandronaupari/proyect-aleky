@@ -951,6 +951,25 @@ body {
     margin-bottom: 0.8rem;
 }
 
+/* 📅 Estilos de Planilla de Asistencia Semanal */
+.attendance-card {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+}
+
+.attendance-table th {
+    text-align: center;
+}
+
+.attendance-table th:first-child {
+    text-align: left;
+}
+
+.att-time:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 2px rgba(30, 64, 175, 0.1) !important;
+}
+
 /* ==========================================================================
    🖨️ CONFIGURACIÓN DE IMPRESIÓN EXCLUSIVA
    ========================================================================== */
