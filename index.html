@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alekey TaskBoard - Mi Tablero Inteligente</title>
+    <title>RRHH Rework - Impresiones Diversas</title>
     <!-- Fuentes tipográficas modernas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,298 +11,799 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Efecto de luces de fondo premium -->
+    <!-- Efecto de luces dinámicas de fondo -->
     <div class="glow-orb orb-purple"></div>
-    <div class="glow-orb orb-blue"></div>
+    <div class="glow-orb orb-cyan"></div>
 
-    <div class="app-container">
-        <!-- Encabezado de la Aplicación -->
-        <header class="app-header">
-            <div class="logo-area">
-                <span class="logo-icon">⚡</span>
-                <h1>Alekey <span class="accent-text">TaskBoard</span></h1>
-            </div>
-            <p class="header-subtitle">Gestión de metas de alto rendimiento con memoria local activa.</p>
-        </header>
-
-        <!-- Nueva sección: Barra de Progreso Dinámica -->
-        <div class="progress-card">
-            <div class="progress-info">
-                <span class="progress-label">Rendimiento del Día</span>
-                <span id="progress-text" class="progress-status">0 de 0 completadas (0%)</span>
-            </div>
-            <div class="progress-bar-track">
-                <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
-            </div>
-        </div>
-
-        <!-- Sección Principal: Entrada de Datos y Filtros -->
-        <div class="controls-panel">
-            <!-- Formulario para agregar tareas -->
-            <form id="task-form" class="task-input-group">
-                <input type="text" id="task-input" placeholder="¿Qué gran meta cumpliremos hoy, Alekey?..." required>
-                
-                <div class="input-row">
-                    <div class="custom-select-wrapper">
-                        <select id="task-priority">
-                            <option value="baja">🟢 Prioridad Baja</option>
-                            <option value="media" selected>🟡 Prioridad Media</option>
-                            <option value="alta">🔴 Prioridad Alta</option>
-                        </select>
-                    </div>
-
-                    <!-- Selector de fecha límite -->
-                    <div class="date-input-wrapper">
-                        <input type="date" id="task-date" title="Fecha límite">
-                    </div>
+    <div class="main-layout">
+        <!-- Barra Lateral de Navegación -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span class="logo-icon">🏢</span>
+                <div class="logo-text">
+                    <h2>RRHH <span class="logo-highlight">Rework</span></h2>
+                    <span class="company-sub">Impresiones Diversas R&E</span>
                 </div>
-                
-                <button type="submit" class="add-btn">
-                    <span class="btn-icon">+</span> Agregar Meta
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-tab="tab-dashboard">
+                    <span class="nav-icon">📊</span> Panel General
                 </button>
-            </form>
+                <button class="nav-btn" data-tab="tab-employees">
+                    <span class="nav-icon">👥</span> Control Personal
+                </button>
+                <button class="nav-btn" data-tab="tab-calculator">
+                    <span class="nav-icon">🧮</span> Calculadora Horas
+                </button>
+                <button class="nav-btn" data-tab="tab-history">
+                    <span class="nav-icon">📜</span> Historial Boletas
+                </button>
+            </nav>
 
-            <!-- Barra de Filtros -->
-            <div class="filters-group">
-                <button class="filter-btn active" data-filter="all">Todas (<span id="count-all">0</span>)</button>
-                <button class="filter-btn" data-filter="active">Pendientes (<span id="count-active">0</span>)</button>
-                <button class="filter-btn" data-filter="completed">Completadas (<span id="count-completed">0</span>)</button>
+            <div class="sidebar-footer">
+                <p>v2.0 • Sincronización Nube</p>
+                <span class="status-indicator">● Conectado a Git</span>
             </div>
-        </div>
+        </aside>
 
-        <!-- Contenedor del Tablero de Tareas -->
-        <main class="board-grid">
-            <!-- Listado de Tareas -->
-            <div class="tasks-list-container">
-                <div id="empty-state" class="empty-state">
-                    <div class="empty-icon">☕</div>
-                    <h3>¡Todo despejado por aquí!</h3>
-                    <p>No tienes metas programadas en este momento. Agrega una arriba para empezar.</p>
+        <!-- Contenedor Principal de Vistas -->
+        <main class="content-area">
+            
+            <!-- 📊 VISTA 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content active">
+                <header class="view-header">
+                    <h1>Resumen Administrativo</h1>
+                    <p>Métricas y gastos operativos generales en tiempo real.</p>
+                </header>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-cyan">👥</div>
+                        <div class="stat-info">
+                            <h3>Personal Activo</h3>
+                            <p id="stat-active-count">0 Empleados</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-purple">💸</div>
+                        <div class="stat-info">
+                            <h3>Presupuesto Mensual</h3>
+                            <p id="stat-total-budget">S/.0.00</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-red">🛑</div>
+                        <div class="stat-info">
+                            <h3>Personal Retirado</h3>
+                            <p id="stat-retired-count">0 Empleados</p>
+                        </div>
+                    </div>
                 </div>
-                
-                <ul id="tasks-list" class="tasks-list">
-                    <!-- Las tareas se inyectarán aquí dinámicamente con JavaScript -->
-                </ul>
-            </div>
-        </main>
 
-        <!-- Pie de página premium -->
-        <footer class="app-footer">
-            <p>Alekey TaskBoard v1.1 • Desarrollado con <strong>Antigravity</strong> • Datos almacenados localmente en tu navegador</p>
-        </footer>
+                <div class="dashboard-widgets">
+                    <!-- Widget de Lista Rápida -->
+                    <div class="widget-card">
+                        <h3>Acciones Rápidas</h3>
+                        <div class="quick-actions">
+                            <button class="action-btn" onclick="switchTab('tab-calculator')">🧮 Nueva Boleta de Horas</button>
+                            <button class="action-btn" onclick="switchTab('tab-employees')">👥 Administrar Personal</button>
+                        </div>
+                    </div>
+                    <!-- Widget de Alerta AFP -->
+                    <div class="widget-card">
+                        <h3>Configuración General</h3>
+                        <p class="widget-desc">Parámetros estándar del cálculo de planillas de la empresa.</p>
+                        <div class="config-summary">
+                            <div class="config-row"><span>Días Laborales Estándar:</span><strong>30 Días</strong></div>
+                            <div class="config-row"><span>Horas por Día:</span><strong>8 Horas</strong></div>
+                            <div class="config-row"><span>Deducción AFP Estándar:</span><strong>S/.109.18</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 👥 VISTA 2: CONTROL DE PERSONAL (EMPLEADOS) -->
+            <section id="tab-employees" class="tab-content">
+                <header class="view-header">
+                    <div class="header-action-group">
+                        <div>
+                            <h1>Control de Personal</h1>
+                            <p>Base de datos de trabajadores activos y retirados.</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="showAddEmployeeModal()">+ Nuevo Empleado</button>
+                    </div>
+                </header>
+
+                <div class="table-container">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre Completo</th>
+                                <th>DNI / Pasaporte</th>
+                                <th>AFP</th>
+                                <th>Sueldo Diversas</th>
+                                <th>Sueldo Registrado</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employees-table-body">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- 🧮 VISTA 3: CALCULADORA DE HORAS -->
+            <section id="tab-calculator" class="tab-content">
+                <header class="view-header">
+                    <h1>Calculadora de Horas Extra y Planilla</h1>
+                    <p>Selecciona un empleado para procesar su boleta de pago y calcular sus horas extra.</p>
+                </header>
+
+                <div class="calculator-grid">
+                    <!-- Formulario de Entrada de Cálculos -->
+                    <div class="card form-card">
+                        <h3>Cálculo de Periodo</h3>
+                        <form id="payroll-form" class="payroll-form-inputs">
+                            <div class="form-group">
+                                <label for="calc-employee-select">Seleccionar Empleado</label>
+                                <select id="calc-employee-select" required>
+                                    <option value="">-- Elige un empleado --</option>
+                                    <!-- Inyectado dinámicamente -->
+                                </select>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="calc-month">Mes de Planilla</label>
+                                    <select id="calc-month">
+                                        <option value="Enero">Enero</option>
+                                        <option value="Febrero">Febrero</option>
+                                        <option value="Marzo">Marzo</option>
+                                        <option value="Abril">Abril</option>
+                                        <option value="Mayo" selected>Mayo</option>
+                                        <option value="Junio">Junio</option>
+                                        <option value="Julio">Julio</option>
+                                        <option value="Agosto">Agosto</option>
+                                        <option value="Septiembre">Septiembre</option>
+                                        <option value="Octubre">Octubre</option>
+                                        <option value="Noviembre">Noviembre</option>
+                                        <option value="Diciembre">Diciembre</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="calc-period">Tipo de Pago</label>
+                                    <select id="calc-period">
+                                        <option value="Quincena">Primera Quincena</option>
+                                        <option value="Cierre de Mes" selected>Cierre de Mes (Fin de Mes)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="calc-salary">Sueldo Base (S/.)</label>
+                                    <input type="number" step="0.01" id="calc-salary" required readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="calc-hourly-rate">Tarifa por Hora (S/.)</label>
+                                    <input type="text" id="calc-hourly-rate" readonly>
+                                </div>
+                            </div>
+
+                            <div class="section-divider">Horas Extras e Inasistencias</div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="calc-he-normal">Horas Extras Normales</label>
+                                    <input type="number" id="calc-he-normal" value="0" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="calc-tardanzas">Tardanzas (Horas)</label>
+                                    <input type="number" id="calc-tardanzas" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="calc-he-sabado">H.E. Sábado (1.5x)</label>
+                                    <input type="number" id="calc-he-sabado" value="0" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="calc-he-domingo">H.E. Domingo (2x)</label>
+                                    <input type="number" id="calc-he-domingo" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <div class="section-divider">Descuentos y Préstamos</div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="calc-prestamos">Préstamo / Adelanto (S/.)</label>
+                                    <input type="number" step="0.01" id="calc-prestamos" value="0" min="0">
+                                </div>
+                                <div class="form-group">
+                                    <label for="calc-afp">Deducción AFP (S/.)</label>
+                                    <input type="number" step="0.01" id="calc-afp" value="0" min="0">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="calc-observaciones">Observaciones (Opcional)</label>
+                                <input type="text" id="calc-observaciones" placeholder="Ej: Préstamo P1/P4, descuento por falta...">
+                            </div>
+
+                            <button type="button" class="btn btn-primary" onclick="calculateAndSaveSlip()">💾 Guardar Boleta e Imprimir</button>
+                        </form>
+                    </div>
+
+                    <!-- Vista Previa de la Boleta Imprimible -->
+                    <div class="card boleta-card">
+                        <div class="boleta-header-action">
+                            <h3>Boleta Electrónica Oficial</h3>
+                            <button class="btn btn-secondary btn-sm" onclick="printBoleta()">🖨️ Imprimir Boleta</button>
+                        </div>
+                        <div id="boleta-printable" class="boleta-printable">
+                            <div class="boleta-empresa">
+                                <h2>IMPRESIONES DIVERSAS R&E S.A.C.</h2>
+                                <p>R.U.C. 20601234567 • Rímac, Lima</p>
+                            </div>
+                            
+                            <div class="boleta-titulo">
+                                <h3>BOLETA DE PAGO - <span id="bol-periodo">CIERRE DE MES</span></h3>
+                            </div>
+
+                            <div class="boleta-datos-personales">
+                                <div class="bol-col">
+                                    <p><strong>Trabajador:</strong> <span id="bol-nombre">-</span></p>
+                                    <p><strong>DNI:</strong> <span id="bol-dni">-</span></p>
+                                    <p><strong>F. Ingreso:</strong> <span id="bol-fecha-ingreso">-</span></p>
+                                </div>
+                                <div class="bol-col">
+                                    <p><strong>Mes:</strong> <span id="bol-mes">-</span></p>
+                                    <p><strong>AFP:</strong> <span id="bol-afp">-</span></p>
+                                    <p><strong>Sueldo Base:</strong> <span id="bol-sueldo-base">S/.0.00</span></p>
+                                </div>
+                            </div>
+
+                            <div class="boleta-tabla">
+                                <div class="bol-row bol-header">
+                                    <span>CONCEPTO</span>
+                                    <span>INGRESOS (S/.)</span>
+                                    <span>EGRESOS (S/.)</span>
+                                </div>
+                                <div class="bol-row">
+                                    <span>Pago de Quincena Estándar</span>
+                                    <span id="bol-ingreso-quincena">S/.0.00</span>
+                                    <span>-</span>
+                                </div>
+                                <div class="bol-row" id="row-bol-he-normal">
+                                    <span>Horas Extras Normales (<span id="bol-qty-he-normal">0</span> hrs)</span>
+                                    <span id="bol-ingreso-he-normal">S/.0.00</span>
+                                    <span>-</span>
+                                </div>
+                                <div class="bol-row" id="row-bol-he-sabado">
+                                    <span>H.E. Sábado (<span id="bol-qty-he-sabado">0</span> hrs)</span>
+                                    <span id="bol-ingreso-he-sabado">S/.0.00</span>
+                                    <span>-</span>
+                                </div>
+                                <div class="bol-row" id="row-bol-he-domingo">
+                                    <span>H.E. Domingo (<span id="bol-qty-he-domingo">0</span> hrs)</span>
+                                    <span id="bol-ingreso-he-domingo">S/.0.00</span>
+                                    <span>-</span>
+                                </div>
+                                <div class="bol-row" id="row-bol-tardanza">
+                                    <span>Descuento por Tardanza (<span id="bol-qty-tardanza">0</span> hrs)</span>
+                                    <span>-</span>
+                                    <span id="bol-egreso-tardanza">S/.0.00</span>
+                                </div>
+                                <div class="bol-row" id="row-bol-afp">
+                                    <span>Aporte Obligatorio AFP</span>
+                                    <span>-</span>
+                                    <span id="bol-egreso-afp">S/.0.00</span>
+                                </div>
+                                <div class="bol-row" id="row-bol-prestamos">
+                                    <span>Préstamos / Adelantos</span>
+                                    <span>-</span>
+                                    <span id="bol-egreso-prestamos">S/.0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="boleta-totales">
+                                <div class="total-row"><span>Total Ingresos:</span><strong id="bol-total-ingresos">S/.0.00</strong></div>
+                                <div class="total-row"><span>Total Egresos:</span><strong id="bol-total-egresos">S/.0.00</strong></div>
+                                <div class="total-row main-total"><span>NETO A PAGAR:</span><strong id="bol-neto-pagar">S/.0.00</strong></div>
+                            </div>
+
+                            <div class="boleta-nota" id="bol-nota-observaciones">
+                                <p><strong>Nota:</strong> <span id="bol-nota-text">Ninguna</span></p>
+                            </div>
+
+                            <div class="boleta-firmas">
+                                <div class="firma-line">
+                                    <div class="line"></div>
+                                    <p>Firma Empleador</p>
+                                </div>
+                                <div class="firma-line">
+                                    <div class="line"></div>
+                                    <p>Firma Trabajador</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 📜 VISTA 4: HISTORIAL DE BOLETAS -->
+            <section id="tab-history" class="tab-content">
+                <header class="view-header">
+                    <h1>Historial de Boletas Emitidas</h1>
+                    <p>Listado general de todas las boletas calculadas y archivadas localmente.</p>
+                </header>
+
+                <div class="table-container">
+                    <table class="premium-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha Registro</th>
+                                <th>Trabajador</th>
+                                <th>Mes / Periodo</th>
+                                <th>Ingresos</th>
+                                <th>Egresos</th>
+                                <th>Neto Pagado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body">
+                            <!-- Inyectado dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <!-- Lógica de la Aplicación en JavaScript -->
+    <!-- ➕ MODAL: NUEVO EMPLEADO -->
+    <div id="add-employee-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>Registrar Nuevo Empleado</h3>
+            <form id="new-employee-form" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-nombre">Nombre</label>
+                        <input type="text" id="emp-nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-apellidos">Apellidos</label>
+                        <input type="text" id="emp-apellidos" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-dni">DNI / Pasaporte</label>
+                        <input type="text" id="emp-dni" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-afp">Nombre AFP</label>
+                        <select id="emp-afp">
+                            <option value="NINGUNA" selected>NINGUNA</option>
+                            <option value="SPP HABITAT">SPP HABITAT</option>
+                            <option value="SPP INTEGRA">SPP INTEGRA</option>
+                            <option value="SPP PRIMA">SPP PRIMA</option>
+                            <option value="ONP">ONP</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-salary">Sueldo Diversas (S/.)</label>
+                        <input type="number" step="0.01" id="emp-salary" value="1025" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-registered">Sueldo Registrado (S/.)</label>
+                        <input type="number" step="0.01" id="emp-registered" value="0">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="emp-afp-pago">Pago AFP Fijo (S/.)</label>
+                        <input type="number" step="0.01" id="emp-afp-pago" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="emp-fecha-ingreso">Fecha de Ingreso</label>
+                        <input type="date" id="emp-fecha-ingreso">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="hideAddEmployeeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cargar Lógica del Sistema -->
     <script>
-        // Elementos del DOM
-        const taskForm = document.getElementById('task-form');
-        const taskInput = document.getElementById('task-input');
-        const taskPriority = document.getElementById('task-priority');
-        const taskDate = document.getElementById('task-date');
-        const tasksList = document.getElementById('tasks-list');
-        const emptyState = document.getElementById('empty-state');
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        
-        // Elementos de la barra de progreso
-        const progressBarFill = document.getElementById('progress-bar-fill');
-        const progressText = document.getElementById('progress-text');
-        
-        // Contadores de filtros
-        const countAll = document.getElementById('count-all');
-        const countActive = document.getElementById('count-active');
-        const countCompleted = document.getElementById('count-completed');
-
-        // Estado inicial de las tareas (Cargar desde LocalStorage o empezar vacío)
-        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        let currentFilter = 'all';
-
-        // Guardar tareas en LocalStorage
-        function saveTasksToLocalStorage() {
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-        }
-
-        // Renderizar la lista de tareas en pantalla
-        function renderTasks() {
-            tasksList.innerHTML = '';
+        // --- 👥 BASE DE DATOS DE EMPLEADOS PRECARGADOS (DESDE EXCEL) ---
+        const initialEmployees = [
+            // ACTIVOS (GASTO PERSONAL)
+            { id: "1", nombre: "KELLY SUSSAN", apellidos: "MANYARI CANALES", dni: "47079927", afp: "NINGUNA", salaryDiversas: 2500, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
+            { id: "2", nombre: "JOEL ALEXANDER", apellidos: "CALIXTRO CASTILLO", dni: "43671707", afp: "SPP HABITAT", salaryDiversas: 2100, salaryRegistered: 930, afpPago: 111.32, fechaIngreso: "2022-01-15", status: "activo" },
+            { id: "3", nombre: "PAUL MAX", apellidos: "CAMPUSMANA GUTIERREZ", dni: "47417804", afp: "SPP INTEGRA", salaryDiversas: 1700, salaryRegistered: 930, afpPago: 109.18, fechaIngreso: "2021-02-06", status: "activo" },
+            { id: "4", nombre: "GIANCARLO JAVIER", apellidos: "BURASCHI CONDEMARIN", dni: "06795286", afp: "NINGUNA", salaryDiversas: 1800, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
+            { id: "5", nombre: "MARIA FERNANDA", apellidos: "CHAPOÑAN SAEZ", dni: "72750890", afp: "NINGUNA", salaryDiversas: 2100, salaryRegistered: 0, afpPago: 109.18, fechaIngreso: "2026-01-01", status: "activo" },
+            { id: "6", nombre: "JESUS DAVID", apellidos: "CORONEL REMON", dni: "72191261", afp: "SPP INTEGRA", salaryDiversas: 1800, salaryRegistered: 1025, afpPago: 109.18, fechaIngreso: "-", status: "activo" },
+            { id: "7", nombre: "FABIAN STHEPHANO", apellidos: "BARBADILLO BAZAN", dni: "75852648", afp: "NINGUNA", salaryDiversas: 1400, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
+            { id: "8", nombre: "RUDY SERGIO", apellidos: "GUTIERREZ MENDOZA", dni: "10121460", afp: "NINGUNA", salaryDiversas: 1500, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "activo" },
             
-            // Filtrar las tareas
-            const filteredTasks = tasks.filter(task => {
-                if (currentFilter === 'active') return !task.completed;
-                if (currentFilter === 'completed') return task.completed;
-                return true;
+            // RETIRADOS (RETIRADO PERSONAL)
+            { id: "r1", nombre: "FREYLIX DAVID", apellidos: "SALAS MEDINA", dni: "143108324", afp: "SPP PRIMA", salaryDiversas: 1600, salaryRegistered: 930, afpPago: 110.85, fechaIngreso: "2018-04-11", status: "retirado" },
+            { id: "r2", nombre: "ORLANDO BORIS", apellidos: "CAJALEON NAVARRETE", dni: "48835146", afp: "NINGUNA", salaryDiversas: 1200, salaryRegistered: 0, afpPago: 0, fechaIngreso: "2024-02-01", status: "retirado" },
+            { id: "r3", nombre: "YATZURY DARLYN", apellidos: "ARONÉS HUAMANÍ", dni: "74733027", afp: "NINGUNA", salaryDiversas: 650, salaryRegistered: 0, afpPago: 0, fechaIngreso: "2025-07-01", status: "retirado" },
+            { id: "r4", nombre: "JACK RENZO", apellidos: "ALARCÓN GUTIERREZ", dni: "71425771", afp: "NINGUNA", salaryDiversas: 1150, salaryRegistered: 0, afpPago: 0, fechaIngreso: "2025-07-01", status: "retirado" },
+            { id: "r5", nombre: "LUIS GERSSON", apellidos: "MARRERO ORTIZ", dni: "9432776", afp: "NINGUNA", salaryDiversas: 1800, salaryRegistered: 0, afpPago: 0, fechaIngreso: "2025-07-01", status: "retirado" },
+            { id: "r6", nombre: "OLGALIZ ESTELA", apellidos: "CORDOVA CORDOVA", dni: "76438948", afp: "NINGUNA", salaryDiversas: 1500, salaryRegistered: 1025, afpPago: 109.18, fechaIngreso: "2024-02-01", status: "retirado" },
+            { id: "r7", nombre: "OSCAR MAURICIO", apellidos: "ZUÑIGA PALACIOS", dni: "72921258", afp: "NINGUNA", salaryDiversas: 1300, salaryRegistered: 0, afpPago: 0, fechaIngreso: "-", status: "retirado" }
+        ];
+
+        // Inicializar Datos en LocalStorage
+        let employees = JSON.parse(localStorage.getItem('rrhh_employees')) || initialEmployees;
+        let slips = JSON.parse(localStorage.getItem('rrhh_slips')) || [];
+
+        function saveToStorage() {
+            localStorage.setItem('rrhh_employees', JSON.stringify(employees));
+            localStorage.setItem('rrhh_slips', JSON.stringify(slips));
+        }
+
+        // --- 🧭 SISTEMA DE PESTAÑAS (TABS) ---
+        const navBtns = document.querySelectorAll('.sidebar-nav .nav-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        function switchTab(tabId) {
+            tabContents.forEach(tab => tab.classList.remove('active'));
+            navBtns.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            const correspondingBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            if (correspondingBtn) correspondingBtn.classList.add('active');
+
+            // Renderizar la información específica según la pestaña
+            if (tabId === 'tab-dashboard') renderDashboard();
+            if (tabId === 'tab-employees') renderEmployeesTable();
+            if (tabId === 'tab-calculator') populateCalculatorOptions();
+            if (tabId === 'tab-history') renderHistoryTable();
+        }
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+                switchTab(tabId);
             });
+        });
 
-            // Mostrar/Ocultar estado vacío
-            if (filteredTasks.length === 0) {
-                emptyState.style.display = 'flex';
-            } else {
-                emptyState.style.display = 'none';
-            }
+        // --- 📊 RENDERIZADO DEL DASHBOARD ---
+        function renderDashboard() {
+            const activeCount = employees.filter(e => e.status === 'activo').length;
+            const retiredCount = employees.filter(e => e.status === 'retirado').length;
+            
+            // Sueldo Total de Personal Activo
+            const totalBudget = employees
+                .filter(e => e.status === 'activo')
+                .reduce((acc, curr) => acc + curr.salaryDiversas, 0);
 
-            // Crear y agregar cada tarjeta de tarea
-            filteredTasks.forEach(task => {
-                const li = document.createElement('li');
-                li.className = `task-card priority-${task.priority} ${task.completed ? 'completed' : ''}`;
-                li.dataset.id = task.id;
+            document.getElementById('stat-active-count').textContent = `${activeCount} Trabajadores`;
+            document.getElementById('stat-retired-count').textContent = `${retiredCount} Trabajadores`;
+            document.getElementById('stat-total-budget').textContent = `S/.${totalBudget.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
 
-                // Formatear la fecha límite si existe
-                let dateBadge = '';
-                if (task.dueDate) {
-                    const formattedDate = formatDateString(task.dueDate);
-                    const isOverdue = checkIfOverdue(task.dueDate) && !task.completed;
-                    dateBadge = `<span class="date-badge ${isOverdue ? 'overdue' : ''}">📅 ${formattedDate}</span>`;
-                }
+        // --- 👥 CONTROL DE PERSONAL (TABLA EMPLEADOS) ---
+        const employeesTableBody = document.getElementById('employees-table-body');
 
-                li.innerHTML = `
-                    <div class="checkbox-container">
-                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
-                        <span class="custom-checkbox"></span>
-                    </div>
-                    <div class="task-content">
-                        <div class="task-info-block">
-                            <span class="task-text">${escapeHTML(task.text)}</span>
-                            ${dateBadge}
-                        </div>
-                        <span class="task-tag tag-${task.priority}">${task.priority.toUpperCase()}</span>
-                    </div>
-                    <button class="delete-task-btn" title="Eliminar tarea">🗑️</button>
+        function renderEmployeesTable() {
+            employeesTableBody.innerHTML = '';
+            employees.forEach(emp => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${emp.nombre} ${emp.apellidos}</strong></td>
+                    <td>${emp.dni}</td>
+                    <td>${emp.afp}</td>
+                    <td>S/.${emp.salaryDiversas.toFixed(2)}</td>
+                    <td>S/.${emp.salaryRegistered.toFixed(2)}</td>
+                    <td><span class="status-badge ${emp.status === 'activo' ? 'active' : 'retired'}">${emp.status.toUpperCase()}</span></td>
+                    <td>
+                        <button class="btn btn-secondary btn-sm" onclick="toggleEmployeeStatus('${emp.id}')">🔄 Alternar Estado</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${emp.id}')">🗑️ Eliminar</button>
+                    </td>
                 `;
-
-                // Evento para tachar/completar
-                const checkbox = li.querySelector('.task-checkbox');
-                checkbox.addEventListener('change', () => toggleTaskComplete(task.id));
-
-                // Evento para eliminar
-                const deleteBtn = li.querySelector('.delete-task-btn');
-                deleteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    deleteTask(task.id);
-                });
-
-                tasksList.appendChild(li);
+                employeesTableBody.appendChild(tr);
             });
-
-            // Actualizar contadores globales y barra de progreso
-            updateCountersAndProgress();
         }
 
-        // Formatear fecha a formato local corto (ej: 29 de May)
-        function formatDateString(dateStr) {
-            const date = new Date(dateStr + 'T00:00:00');
-            const options = { day: 'numeric', month: 'short' };
-            return date.toLocaleDateString('es-ES', options);
+        function toggleEmployeeStatus(id) {
+            employees = employees.map(emp => {
+                if (emp.id === id) {
+                    const newStatus = emp.status === 'activo' ? 'retirado' : 'activo';
+                    return { ...emp, status: newStatus };
+                }
+                return emp;
+            });
+            saveToStorage();
+            renderEmployeesTable();
         }
 
-        // Verificar si la fecha límite ya pasó
-        function checkIfOverdue(dateStr) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const dueDate = new Date(dateStr + 'T00:00:00');
-            return dueDate < today;
+        function deleteEmployee(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este empleado de la base de datos?')) {
+                employees = employees.filter(emp => emp.id !== id);
+                saveToStorage();
+                renderEmployeesTable();
+            }
         }
 
-        // Escapar HTML para evitar inyecciones
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, 
-                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-            );
+        // --- ➕ MODAL DE NUEVO EMPLEADO ---
+        const addEmployeeModal = document.getElementById('add-employee-modal');
+        const newEmployeeForm = document.getElementById('new-employee-form');
+
+        function showAddEmployeeModal() {
+            addEmployeeModal.style.display = 'flex';
         }
 
-        // Agregar una nueva tarea
-        function addTask(text, priority, dueDate) {
-            const newTask = {
+        function hideAddEmployeeModal() {
+            addEmployeeModal.style.display = 'none';
+            newEmployeeForm.reset();
+        }
+
+        newEmployeeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('emp-nombre').value.trim();
+            const apellidos = document.getElementById('emp-apellidos').value.trim();
+            const dni = document.getElementById('emp-dni').value.trim();
+            const afp = document.getElementById('emp-afp').value;
+            const salary = parseFloat(document.getElementById('emp-salary').value) || 0;
+            const registered = parseFloat(document.getElementById('emp-registered').value) || 0;
+            const afpPago = parseFloat(document.getElementById('emp-afp-pago').value) || 0;
+            const dateInput = document.getElementById('emp-fecha-ingreso').value;
+            const fechaIngreso = dateInput ? dateInput.split('-').reverse().join('/') : '-';
+
+            const newEmp = {
                 id: Date.now().toString(),
-                text: text,
-                priority: priority,
-                dueDate: dueDate || null,
-                completed: false,
-                createdAt: new Date().toISOString()
+                nombre: nombre,
+                apellidos: apellidos,
+                dni: dni,
+                afp: afp,
+                salaryDiversas: salary,
+                salaryRegistered: registered,
+                afpPago: afpPago,
+                fechaIngreso: fechaIngreso,
+                status: "activo"
             };
 
-            tasks.unshift(newTask);
-            saveTasksToLocalStorage();
-            renderTasks();
-        }
+            employees.push(newEmp);
+            saveToStorage();
+            hideAddEmployeeModal();
+            renderEmployeesTable();
+        });
 
-        // Cambiar estado de completado
-        function toggleTaskComplete(id) {
-            tasks = tasks.map(task => {
-                if (task.id === id) {
-                    return { ...task, completed: !task.completed };
-                }
-                return task;
+        // --- 🧮 CALCULADORA DE PLANILLA Y BOLETAS ---
+        const calcEmployeeSelect = document.getElementById('calc-employee-select');
+        const calcSalary = document.getElementById('calc-salary');
+        const calcHourlyRate = document.getElementById('calc-hourly-rate');
+        const calcAfp = document.getElementById('calc-afp');
+        const calcPeriod = document.getElementById('calc-period');
+
+        function populateCalculatorOptions() {
+            // Llenar select con empleados activos
+            calcEmployeeSelect.innerHTML = '<option value="">-- Elige un empleado --</option>';
+            employees.filter(e => e.status === 'activo').forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp.id;
+                opt.textContent = `${emp.nombre} ${emp.apellidos}`;
+                calcEmployeeSelect.appendChild(opt);
             });
-            saveTasksToLocalStorage();
-            renderTasks();
         }
 
-        // Eliminar una tarea
-        function deleteTask(id) {
-            const card = document.querySelector(`[data-id="${id}"]`);
-            if (card) {
-                card.style.transform = 'scale(0.8) translateY(20px)';
-                card.style.opacity = '0';
-                card.style.transition = 'all 0.3s ease';
-                setTimeout(() => {
-                    tasks = tasks.filter(task => task.id !== id);
-                    saveTasksToLocalStorage();
-                    renderTasks();
-                }, 300);
+        // Listener cuando cambia el empleado seleccionado
+        calcEmployeeSelect.addEventListener('change', () => {
+            const empId = calcEmployeeSelect.value;
+            if (!empId) {
+                calcSalary.value = '';
+                calcHourlyRate.value = '';
+                calcAfp.value = 0;
+                return;
+            }
+
+            const emp = employees.find(e => e.id === empId);
+            if (emp) {
+                calcSalary.value = emp.salaryDiversas.toFixed(2);
+                
+                // Tarifa por hora = (Sueldo / 30) / 8
+                const hourlyRate = (emp.salaryDiversas / 30) / 8;
+                calcHourlyRate.value = hourlyRate.toFixed(4);
+
+                // Asignar el AFP que tiene configurado
+                calcAfp.value = emp.afpPago.toFixed(2);
+                
+                // Si es Primera Quincena, el AFP y las HE de cierre de mes suelen estar en 0
+                adjustInputsForPeriod();
+            }
+        });
+
+        calcPeriod.addEventListener('change', adjustInputsForPeriod);
+
+        function adjustInputsForPeriod() {
+            const period = calcPeriod.value;
+            const empId = calcEmployeeSelect.value;
+            if (!empId) return;
+
+            const emp = employees.find(e => e.id === empId);
+            if (period === 'Quincena') {
+                // En quincena el AFP suele ser 0, se descuenta en el cierre de mes
+                calcAfp.value = '0.00';
             } else {
-                tasks = tasks.filter(task => task.id !== id);
-                saveTasksToLocalStorage();
-                renderTasks();
+                calcAfp.value = emp.afpPago.toFixed(2);
             }
         }
 
-        // Actualizar contadores y el llenado de la barra de progreso
-        function updateCountersAndProgress() {
-            const allCount = tasks.length;
-            const activeCount = tasks.filter(t => !t.completed).length;
-            const completedCount = tasks.filter(t => t.completed).length;
-
-            countAll.textContent = allCount;
-            countActive.textContent = activeCount;
-            countCompleted.textContent = completedCount;
-
-            // Lógica de cálculo de progreso
-            if (allCount === 0) {
-                progressBarFill.style.width = '0%';
-                progressText.textContent = '0 de 0 completadas (0%)';
-            } else {
-                const percentage = Math.round((completedCount / allCount) * 100);
-                progressBarFill.style.width = `${percentage}%`;
-                progressText.textContent = `${completedCount} de ${allCount} completadas (${percentage}%)`;
+        // Realizar cálculos y generar boleta en pantalla
+        function calculateAndSaveSlip() {
+            const empId = calcEmployeeSelect.value;
+            if (!empId) {
+                alert('Por favor selecciona un empleado.');
+                return;
             }
-        }
 
-        // Evento de envío del formulario
-        taskForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const text = taskInput.value.trim();
-            const priority = taskPriority.value;
-            const date = taskDate.value;
+            const emp = employees.find(e => e.id === empId);
+            const mes = document.getElementById('calc-month').value;
+            const periodo = calcPeriod.value;
+            const salary = parseFloat(calcSalary.value);
+            const hourlyRate = (salary / 30) / 8;
             
-            if (text) {
-                addTask(text, priority, date);
-                taskInput.value = '';
-                taskDate.value = ''; // Limpiar campos
-                taskInput.focus();
+            // Valores ingresados
+            const qtyHeNormal = parseFloat(document.getElementById('calc-he-normal').value) || 0;
+            const qtyHeSabado = parseFloat(document.getElementById('calc-he-sabado').value) || 0;
+            const qtyHeDomingo = parseFloat(document.getElementById('calc-he-domingo').value) || 0;
+            const qtyTardanza = parseFloat(document.getElementById('calc-tardanzas').value) || 0;
+            const prestamos = parseFloat(document.getElementById('calc-prestamos').value) || 0;
+            const afpVal = parseFloat(calcAfp.value) || 0;
+            const observaciones = document.getElementById('calc-observaciones').value.trim();
+
+            // Fórmulas de cálculo de ingresos y egresos
+            const pagoQuincena = salary / 2; // Quincena estándar es la mitad del sueldo
+            
+            const ingresoHeNormal = qtyHeNormal * hourlyRate;
+            const ingresoHeSabado = qtyHeSabado * (hourlyRate * 1.5); // Sábado 1.5x
+            const ingresoHeDomingo = qtyHeDomingo * (hourlyRate * 2); // Domingo 2x
+            
+            const egresoTardanza = qtyTardanza * hourlyRate;
+
+            const totalIngresos = pagoQuincena + ingresoHeNormal + ingresoHeSabado + ingresoHeDomingo;
+            const totalEgresos = egresoTardanza + afpVal + prestamos;
+            const netoPagar = totalIngresos - totalEgresos;
+
+            // --- LLENAR LA BOLETA DE VISTA PREVIA ---
+            document.getElementById('bol-periodo').textContent = periodo.toUpperCase();
+            document.getElementById('bol-nombre').textContent = `${emp.nombre} ${emp.apellidos}`;
+            document.getElementById('bol-dni').textContent = emp.dni;
+            document.getElementById('bol-fecha-ingreso').textContent = emp.fechaIngreso;
+            document.getElementById('bol-mes').textContent = `${mes} 2026`;
+            document.getElementById('bol-afp').textContent = emp.afp;
+            document.getElementById('bol-sueldo-base').textContent = `S/.${salary.toFixed(2)}`;
+
+            // Ingresos
+            document.getElementById('bol-ingreso-quincena').textContent = `S/.${pagoQuincena.toFixed(2)}`;
+            
+            document.getElementById('bol-qty-he-normal').textContent = qtyHeNormal;
+            document.getElementById('bol-ingreso-he-normal').textContent = `S/.${ingresoHeNormal.toFixed(2)}`;
+            document.getElementById('row-bol-he-normal').style.display = qtyHeNormal > 0 ? 'flex' : 'none';
+
+            document.getElementById('bol-qty-he-sabado').textContent = qtyHeSabado;
+            document.getElementById('bol-ingreso-he-sabado').textContent = `S/.${ingresoHeSabado.toFixed(2)}`;
+            document.getElementById('row-bol-he-sabado').style.display = qtyHeSabado > 0 ? 'flex' : 'none';
+
+            document.getElementById('bol-qty-he-domingo').textContent = qtyHeDomingo;
+            document.getElementById('bol-ingreso-he-domingo').textContent = `S/.${ingresoHeDomingo.toFixed(2)}`;
+            document.getElementById('row-bol-he-domingo').style.display = qtyHeDomingo > 0 ? 'flex' : 'none';
+
+            // Egresos
+            document.getElementById('bol-qty-tardanza').textContent = qtyTardanza;
+            document.getElementById('bol-egreso-tardanza').textContent = `S/.${egresoTardanza.toFixed(2)}`;
+            document.getElementById('row-bol-tardanza').style.display = qtyTardanza > 0 ? 'flex' : 'none';
+
+            document.getElementById('bol-egreso-afp').textContent = `S/.${afpVal.toFixed(2)}`;
+            document.getElementById('row-bol-afp').style.display = afpVal > 0 ? 'flex' : 'none';
+
+            document.getElementById('bol-egreso-prestamos').textContent = `S/.${prestamos.toFixed(2)}`;
+            document.getElementById('row-bol-prestamos').style.display = prestamos > 0 ? 'flex' : 'none';
+
+            // Totales
+            document.getElementById('bol-total-ingresos').textContent = `S/.${totalIngresos.toFixed(2)}`;
+            document.getElementById('bol-total-egresos').textContent = `S/.${totalEgresos.toFixed(2)}`;
+            document.getElementById('bol-neto-pagar').textContent = `S/.${netoPagar.toFixed(2)}`;
+
+            // Observaciones
+            if (observaciones) {
+                document.getElementById('bol-nota-text').textContent = observaciones;
+                document.getElementById('bol-nota-observaciones').style.display = 'block';
+            } else {
+                document.getElementById('bol-nota-observaciones').style.display = 'none';
             }
-        });
 
-        // Eventos de los botones de filtro
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                renderTasks();
+            // --- GUARDAR EN EL HISTORIAL ---
+            const newSlip = {
+                id: Date.now().toString(),
+                fechaRegistro: new Date().toLocaleDateString('es-PE'),
+                trabajador: `${emp.nombre} ${emp.apellidos}`,
+                periodo: `${mes} - ${periodo}`,
+                ingresos: totalIngresos,
+                egresos: totalEgresos,
+                neto: netoPagar
+            };
+
+            slips.unshift(newSlip);
+            saveToStorage();
+            
+            alert('Boleta de horas calculada e ingresada en el historial con éxito.');
+        }
+
+        // Imprimir boleta de pago
+        function printBoleta() {
+            const printContent = document.getElementById('boleta-printable').innerHTML;
+            const originalContent = document.body.innerHTML;
+
+            // Reemplazar cuerpo con contenido de boleta para impresión limpia
+            document.body.innerHTML = `
+                <div style="padding: 2cm; background-color: white; color: black; font-family: 'Plus Jakarta Sans', sans-serif;">
+                    ${printContent}
+                </div>
+            `;
+            window.print();
+            
+            // Restaurar aplicación
+            document.body.innerHTML = originalContent;
+            
+            // Recargar scripts y eventos al restaurar DOM
+            window.location.reload();
+        }
+
+        // --- 📜 HISTORIAL DE BOLETAS ---
+        const historyTableBody = document.getElementById('history-table-body');
+
+        function renderHistoryTable() {
+            historyTableBody.innerHTML = '';
+            if (slips.length === 0) {
+                historyTableBody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No hay boletas archivadas en el historial.</td></tr>';
+                return;
+            }
+
+            slips.forEach(slip => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${slip.fechaRegistro}</td>
+                    <td><strong>${slip.trabajador}</strong></td>
+                    <td>${slip.periodo}</td>
+                    <td>S/.${slip.ingresos.toFixed(2)}</td>
+                    <td>S/.${slip.egresos.toFixed(2)}</td>
+                    <td><strong class="color-cyan">S/.${slip.neto.toFixed(2)}</strong></td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="deleteSlip('${slip.id}')">🗑️ Eliminar</button>
+                    </td>
+                `;
+                historyTableBody.appendChild(tr);
             });
-        });
+        }
 
-        // Inicializar
-        renderTasks();
+        function deleteSlip(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este registro del historial?')) {
+                slips = slips.filter(s => s.id !== id);
+                saveToStorage();
+                renderHistoryTable();
+            }
+        }
+
+        // Inicialización
+        switchTab('tab-dashboard');
     </script>
 </body>
 </html>
