@@ -25,18 +25,36 @@
             <p class="header-subtitle">Gestión de metas de alto rendimiento con memoria local activa.</p>
         </header>
 
+        <!-- Nueva sección: Barra de Progreso Dinámica -->
+        <div class="progress-card">
+            <div class="progress-info">
+                <span class="progress-label">Rendimiento del Día</span>
+                <span id="progress-text" class="progress-status">0 de 0 completadas (0%)</span>
+            </div>
+            <div class="progress-bar-track">
+                <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
         <!-- Sección Principal: Entrada de Datos y Filtros -->
         <div class="controls-panel">
             <!-- Formulario para agregar tareas -->
             <form id="task-form" class="task-input-group">
                 <input type="text" id="task-input" placeholder="¿Qué gran meta cumpliremos hoy, Alekey?..." required>
                 
-                <div class="custom-select-wrapper">
-                    <select id="task-priority">
-                        <option value="baja">🟢 Prioridad Baja</option>
-                        <option value="media" selected>🟡 Prioridad Media</option>
-                        <option value="alta">🔴 Prioridad Alta</option>
-                    </select>
+                <div class="input-row">
+                    <div class="custom-select-wrapper">
+                        <select id="task-priority">
+                            <option value="baja">🟢 Prioridad Baja</option>
+                            <option value="media" selected>🟡 Prioridad Media</option>
+                            <option value="alta">🔴 Prioridad Alta</option>
+                        </select>
+                    </div>
+
+                    <!-- Selector de fecha límite -->
+                    <div class="date-input-wrapper">
+                        <input type="date" id="task-date" title="Fecha límite">
+                    </div>
                 </div>
                 
                 <button type="submit" class="add-btn">
@@ -70,7 +88,7 @@
 
         <!-- Pie de página premium -->
         <footer class="app-footer">
-            <p>Alekey TaskBoard v1.0 • Desarrollado con <strong>Antigravity</strong> • Datos almacenados localmente en tu navegador</p>
+            <p>Alekey TaskBoard v1.1 • Desarrollado con <strong>Antigravity</strong> • Datos almacenados localmente en tu navegador</p>
         </footer>
     </div>
 
@@ -80,11 +98,16 @@
         const taskForm = document.getElementById('task-form');
         const taskInput = document.getElementById('task-input');
         const taskPriority = document.getElementById('task-priority');
+        const taskDate = document.getElementById('task-date');
         const tasksList = document.getElementById('tasks-list');
         const emptyState = document.getElementById('empty-state');
         const filterBtns = document.querySelectorAll('.filter-btn');
         
-        // Contadores
+        // Elementos de la barra de progreso
+        const progressBarFill = document.getElementById('progress-bar-fill');
+        const progressText = document.getElementById('progress-text');
+        
+        // Contadores de filtros
         const countAll = document.getElementById('count-all');
         const countActive = document.getElementById('count-active');
         const countCompleted = document.getElementById('count-completed');
@@ -122,13 +145,24 @@
                 li.className = `task-card priority-${task.priority} ${task.completed ? 'completed' : ''}`;
                 li.dataset.id = task.id;
 
+                // Formatear la fecha límite si existe
+                let dateBadge = '';
+                if (task.dueDate) {
+                    const formattedDate = formatDateString(task.dueDate);
+                    const isOverdue = checkIfOverdue(task.dueDate) && !task.completed;
+                    dateBadge = `<span class="date-badge ${isOverdue ? 'overdue' : ''}">📅 ${formattedDate}</span>`;
+                }
+
                 li.innerHTML = `
                     <div class="checkbox-container">
                         <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
                         <span class="custom-checkbox"></span>
                     </div>
                     <div class="task-content">
-                        <span class="task-text">${escapeHTML(task.text)}</span>
+                        <div class="task-info-block">
+                            <span class="task-text">${escapeHTML(task.text)}</span>
+                            ${dateBadge}
+                        </div>
                         <span class="task-tag tag-${task.priority}">${task.priority.toUpperCase()}</span>
                     </div>
                     <button class="delete-task-btn" title="Eliminar tarea">🗑️</button>
@@ -148,8 +182,23 @@
                 tasksList.appendChild(li);
             });
 
-            // Actualizar contadores globales
-            updateCounters();
+            // Actualizar contadores globales y barra de progreso
+            updateCountersAndProgress();
+        }
+
+        // Formatear fecha a formato local corto (ej: 29 de May)
+        function formatDateString(dateStr) {
+            const date = new Date(dateStr + 'T00:00:00');
+            const options = { day: 'numeric', month: 'short' };
+            return date.toLocaleDateString('es-ES', options);
+        }
+
+        // Verificar si la fecha límite ya pasó
+        function checkIfOverdue(dateStr) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const dueDate = new Date(dateStr + 'T00:00:00');
+            return dueDate < today;
         }
 
         // Escapar HTML para evitar inyecciones
@@ -160,16 +209,17 @@
         }
 
         // Agregar una nueva tarea
-        function addTask(text, priority) {
+        function addTask(text, priority, dueDate) {
             const newTask = {
                 id: Date.now().toString(),
                 text: text,
                 priority: priority,
+                dueDate: dueDate || null,
                 completed: false,
                 createdAt: new Date().toISOString()
             };
 
-            tasks.unshift(newTask); // Agregar al principio
+            tasks.unshift(newTask);
             saveTasksToLocalStorage();
             renderTasks();
         }
@@ -188,7 +238,6 @@
 
         // Eliminar una tarea
         function deleteTask(id) {
-            // Animación de salida antes de eliminar del arreglo
             const card = document.querySelector(`[data-id="${id}"]`);
             if (card) {
                 card.style.transform = 'scale(0.8) translateY(20px)';
@@ -206,8 +255,8 @@
             }
         }
 
-        // Actualizar contadores de las pestañas
-        function updateCounters() {
+        // Actualizar contadores y el llenado de la barra de progreso
+        function updateCountersAndProgress() {
             const allCount = tasks.length;
             const activeCount = tasks.filter(t => !t.completed).length;
             const completedCount = tasks.filter(t => t.completed).length;
@@ -215,6 +264,16 @@
             countAll.textContent = allCount;
             countActive.textContent = activeCount;
             countCompleted.textContent = completedCount;
+
+            // Lógica de cálculo de progreso
+            if (allCount === 0) {
+                progressBarFill.style.width = '0%';
+                progressText.textContent = '0 de 0 completadas (0%)';
+            } else {
+                const percentage = Math.round((completedCount / allCount) * 100);
+                progressBarFill.style.width = `${percentage}%`;
+                progressText.textContent = `${completedCount} de ${allCount} completadas (${percentage}%)`;
+            }
         }
 
         // Evento de envío del formulario
@@ -222,10 +281,12 @@
             e.preventDefault();
             const text = taskInput.value.trim();
             const priority = taskPriority.value;
+            const date = taskDate.value;
             
             if (text) {
-                addTask(text, priority);
-                taskInput.value = ''; // Limpiar campo
+                addTask(text, priority, date);
+                taskInput.value = '';
+                taskDate.value = ''; // Limpiar campos
                 taskInput.focus();
             }
         });
@@ -240,7 +301,7 @@
             });
         });
 
-        // Inicializar el tablero en pantalla al cargar
+        // Inicializar
         renderTasks();
     </script>
 </body>

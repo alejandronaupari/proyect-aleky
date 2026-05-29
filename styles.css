@@ -93,7 +93,7 @@ body {
     width: 90%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 /* 📛 Encabezado de la Aplicación */
@@ -103,6 +103,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .logo-area {
@@ -140,6 +141,55 @@ body {
     font-size: 1rem;
 }
 
+/* 📊 Nueva Tarjeta de Barra de Progreso */
+.progress-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 1.2rem 1.5rem;
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.progress-label {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: -0.2px;
+}
+
+.progress-status {
+    font-size: 0.85rem;
+    color: var(--accent-blue);
+    font-weight: 700;
+}
+
+.progress-bar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 100px;
+    height: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+    border-radius: 100px;
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 10px var(--accent-blue-glow);
+}
+
 /* 🎛️ Panel de Controles (Input y Filtros) */
 .controls-panel {
     background: var(--bg-card);
@@ -156,13 +206,11 @@ body {
 /* Grupo de Entrada del Formulario */
 .task-input-group {
     display: flex;
+    flex-direction: column;
     gap: 0.8rem;
-    flex-wrap: wrap;
 }
 
-.task-input-group input {
-    flex: 1;
-    min-width: 250px;
+.task-input-group input[type="text"] {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-color);
     border-radius: 14px;
@@ -171,17 +219,31 @@ body {
     font-family: var(--font-body);
     font-size: 0.95rem;
     transition: all 0.3s ease;
+    width: 100%;
 }
 
-.task-input-group input:focus {
+.task-input-group input[type="text"]:focus {
     outline: none;
     border-color: var(--accent-blue);
     background: rgba(255, 255, 255, 0.06);
     box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
 }
 
-/* Selector Personalizado */
-.custom-select-wrapper select {
+/* Fila de controles secundarios (Prioridad + Fecha) */
+.input-row {
+    display: flex;
+    gap: 0.8rem;
+    width: 100%;
+}
+
+.custom-select-wrapper,
+.date-input-wrapper {
+    flex: 1;
+}
+
+.custom-select-wrapper select,
+.date-input-wrapper input[type="date"] {
+    width: 100%;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--border-color);
     border-radius: 14px;
@@ -191,12 +253,14 @@ body {
     font-size: 0.9rem;
     cursor: pointer;
     outline: none;
-    height: 100%;
     transition: all 0.3s ease;
+    height: 52px;
 }
 
-.custom-select-wrapper select:focus {
+.custom-select-wrapper select:focus,
+.date-input-wrapper input[type="date"]:focus {
     border-color: var(--accent-purple);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* Botón Agregar */
@@ -216,10 +280,11 @@ body {
     gap: 0.5rem;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+    width: 100%;
 }
 
 .add-btn:hover {
-    transform: scale(1.02);
+    transform: scale(1.01);
     box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
 }
 
@@ -371,12 +436,38 @@ body {
     gap: 1rem;
 }
 
+.task-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
 .task-text {
     font-size: 0.95rem;
     font-weight: 500;
     line-height: 1.5;
     color: var(--text-primary);
     transition: all 0.3s ease;
+}
+
+/* Insignia de Fecha Límite */
+.date-badge {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.date-badge.overdue {
+    color: var(--priority-high);
+    border-color: rgba(239, 68, 68, 0.2);
+    background-color: var(--priority-high-bg);
 }
 
 /* Tareas Completadas (Estilo tachado y atenuado) */
@@ -388,6 +479,12 @@ body {
 .task-card.completed .task-text {
     text-decoration: line-through;
     color: var(--text-muted);
+}
+
+.task-card.completed .date-badge {
+    color: var(--text-muted);
+    border-color: transparent;
+    background-color: transparent;
 }
 
 /* Etiquetas de Prioridad */
@@ -479,16 +576,21 @@ body {
         font-size: 2.1rem;
     }
     
+    .progress-card {
+        padding: 1rem;
+    }
+    
     .controls-panel {
         padding: 1rem;
         border-radius: 20px;
     }
     
-    .task-input-group {
+    .input-row {
         flex-direction: column;
     }
     
     .custom-select-wrapper select,
+    .date-input-wrapper input[type="date"],
     .add-btn {
         width: 100%;
     }
