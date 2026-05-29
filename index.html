@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Primer Paso en la Programación - Alejandro</title>
+    <!-- Cargamos una fuente tipográfica premium desde Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Vinculamos nuestra hoja de estilos premium -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <main class="dashboard-container">
+        <!-- Encabezado del Portal -->
+        <header class="main-header">
+            <div class="badge">🚀 Misión: Aprender a Programar</div>
+            <h1>¡Hola, <span class="highlight">mi kong</span>!</h1>
+            <p class="subtitle">Este es el inicio de tu viaje en el mundo del desarrollo de software. No necesitas ser programador hoy; hoy solo necesitas tener curiosidad.</p>
+        </header>
+
+        <!-- Sección de Tarjetas Interactivas -->
+        <section class="cards-grid">
+            
+            <!-- Tarjeta 1: La Estructura (HTML) -->
+            <div class="card card-html">
+                <div class="card-icon">🦴</div>
+                <h2>El Esqueleto: HTML</h2>
+                <p>HTML es la estructura de una página web. Define dónde van los textos, las imágenes y los botones. Es como los ladrillos y columnas de una casa.</p>
+                <div class="tag">Estructura</div>
+            </div>
+
+            <!-- Tarjeta 2: El Diseño (CSS) -->
+            <div class="card card-css">
+                <div class="card-icon">🎨</div>
+                <h2>El Diseño: CSS</h2>
+                <p>CSS es el estilo y el arte. Se encarga de los colores oscuros elegantes, los bordes redondeados, las fuentes hermosas y los brillos morados que estás viendo aquí.</p>
+                <div class="tag">Estilo</div>
+            </div>
+
+            <!-- Tarjeta 3: La Acción (JavaScript) -->
+            <div class="card card-js" id="interactive-card">
+                <div class="card-icon">🧠</div>
+                <h2>El Cerebro: JavaScript</h2>
+                <p>JavaScript le da vida a la página. Permite que las cosas reaccionen cuando haces clic en ellas. ¡Haz clic en este botón para ver la magia!</p>
+                <button class="magic-button" id="magic-btn">¡Activar Magia!</button>
+            </div>
+
+        </section>
+
+        <!-- Panel de Mensajes Interactivos -->
+        <div class="magic-panel id-message" id="magic-message-box">
+            <p id="magic-text">💡 Haz clic en el botón de la tercera tarjeta para activar tu primer logro de programación.</p>
+        </div>
+
+        <!-- Pie de página elegante -->
+        <footer class="footer">
+            <p>Creado con la ayuda de <strong>Antigravity</strong> • Carpeta de Alejandro: <code>d:\Proyect - Alejandro</code></p>
+        </footer>
+    </main>
+
+    <!-- Un script simple en JavaScript para la interactividad de la tercera tarjeta -->
+    <script>
+        const magicBtn = document.getElementById('magic-btn');
+        const cardJs = document.getElementById('interactive-card');
+        const magicMsgBox = document.getElementById('magic-message-box');
+        const magicText = document.getElementById('magic-text');
+
+        const motivationalPhrases = [
+            "✨ ¡Felicidades! Acabas de ejecutar tu primera función en JavaScript. ¡Ya estás interactuando con código!",
+            "🔥 Un programador no es alguien que lo sabe todo, sino alguien que sabe resolver problemas paso a paso.",
+            "🌟 El secreto para programar es la constancia. ¡Estás haciéndolo genial, Alejandro!",
+            "💻 ¡Todo el software del mundo (Facebook, Netflix, etc.) funciona bajo estos mismos principios!"
+        ];
+
+        let index = 0;
+
+        magicBtn.addEventListener('click', (e) => {
+            // Prevenir propagación
+            e.stopPropagation();
+            
+            // Cambiar el mensaje motivacional
+            magicText.textContent = motivationalPhrases[index];
+            index = (index + 1) % motivationalPhrases.length;
+
+            // Añadir un efecto visual de brillo y pulso a la tarjeta
+            cardJs.classList.add('active-glow');
+            magicMsgBox.classList.add('success-glow');
+            
+            // Remover el brillo después de un segundo para que se pueda repetir
+            setTimeout(() => {
+                cardJs.classList.remove('active-glow');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
