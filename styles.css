@@ -1,8 +1,8 @@
 /* ==========================================
-   DISEÑO DE SISTEMA PREMIUM - PORTAL DE ALEJANDRO
+   SISTEMA DE DISEÑO PREMIUM - ALEKEY TASKBOARD
    ========================================== */
 
-/* Reseteo y configuración base */
+/* Reseteo y Base */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -10,20 +10,29 @@
 }
 
 :root {
-    /* Paleta de Colores HSL Tailored */
+    /* Paleta HSL Ultra Oscura & Premium */
     --bg-main: hsl(224, 71%, 4%);
-    --bg-card: hsl(223, 47%, 7%);
+    --bg-card: hsla(223, 47%, 7%, 0.6);
     --border-color: hsla(217, 30%, 20%, 0.5);
+    --border-hover: hsla(217, 30%, 40%, 0.8);
     
-    /* Colores Acento */
+    /* Colores Acento y Prioridades */
     --accent-purple: hsl(263, 70%, 50%);
-    --accent-purple-glow: hsla(263, 70%, 50%, 0.4);
+    --accent-purple-glow: hsla(263, 70%, 50%, 0.35);
     --accent-blue: hsl(196, 100%, 48%);
-    --accent-green: hsl(142, 71%, 45%);
+    --accent-blue-glow: hsla(196, 100%, 48%, 0.35);
     
+    --priority-high: hsl(354, 70%, 54%);
+    --priority-high-bg: hsla(354, 70%, 54%, 0.15);
+    --priority-medium: hsl(45, 100%, 51%);
+    --priority-medium-bg: hsla(45, 100%, 51%, 0.15);
+    --priority-low: hsl(142, 71%, 45%);
+    --priority-low-bg: hsla(142, 71%, 45%, 0.15);
+
     /* Textos */
     --text-primary: hsl(210, 40%, 98%);
     --text-secondary: hsl(215, 20%, 65%);
+    --text-muted: hsl(215, 15%, 45%);
     
     /* Tipografías */
     --font-heading: 'Outfit', sans-serif;
@@ -37,235 +46,456 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     overflow-x: hidden;
     position: relative;
+    padding: 2rem 0;
 }
 
-/* Efecto de Brillo de Fondo Dinámico (Glow Effect) */
-.background-glow {
+/* 🌌 Globos de Brillo de Fondo (Glow Orbs) */
+.glow-orb {
     position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.5;
+    animation: pulseOrb 8s infinite alternate ease-in-out;
+}
+
+.orb-purple {
     top: -10%;
-    left: 20%;
+    left: 15%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--accent-purple-glow) 0%, rgba(0,0,0,0) 70%);
+}
+
+.orb-blue {
+    bottom: 10%;
+    right: 15%;
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, var(--accent-purple-glow) 0%, rgba(15, 23, 42, 0) 70%);
-    border-radius: 50%;
-    z-index: 1;
-    filter: blur(80px);
-    pointer-events: none;
+    background: radial-gradient(circle, var(--accent-blue-glow) 0%, rgba(0,0,0,0) 70%);
+    animation-delay: -4s;
 }
 
-/* Contenedor Principal (Dashboard) */
-.dashboard-container {
+@keyframes pulseOrb {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.15) translate(30px, 30px); }
+}
+
+/* 📦 Contenedor de la Aplicación */
+.app-container {
     position: relative;
     z-index: 10;
-    max-width: 1000px;
+    max-width: 750px;
     width: 90%;
-    padding: 3rem 0;
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 2rem;
 }
 
-/* Encabezado */
-.main-header {
+/* 📛 Encabezado de la Aplicación */
+.app-header {
     text-align: center;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-area {
+    display: flex;
     align-items: center;
     gap: 0.8rem;
 }
 
-.badge {
-    background: linear-gradient(90deg, hsla(263, 70%, 50%, 0.2) 0%, hsla(196, 100%, 48%, 0.2) 100%);
-    border: 1px solid hsla(263, 70%, 50%, 0.4);
-    color: hsl(196, 100%, 75%);
-    font-size: 0.85rem;
-    font-weight: 600;
-    padding: 0.4rem 1.2rem;
-    border-radius: 100px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+.logo-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 10px var(--accent-blue));
+    animation: logoFloat 3s infinite alternate ease-in-out;
 }
 
-.main-header h1 {
+@keyframes logoFloat {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-6px); }
+}
+
+.app-header h1 {
     font-family: var(--font-heading);
-    font-size: 3.5rem;
+    font-size: 2.6rem;
     font-weight: 800;
     letter-spacing: -1px;
 }
 
-.highlight {
-    background: linear-gradient(135deg, var(--accent-purple) 0%, var(--accent-blue) 100%);
+.accent-text {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.subtitle {
+.header-subtitle {
     color: var(--text-secondary);
-    font-size: 1.15rem;
-    max-width: 600px;
-    line-height: 1.6;
+    font-size: 1rem;
 }
 
-/* Cuadrícula de Tarjetas */
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.8rem;
-}
-
-/* Tarjetas Premium */
-.card {
-    background-color: var(--bg-card);
+/* 🎛️ Panel de Controles (Input y Filtros) */
+.controls-panel {
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 2.2rem;
+    border-radius: 24px;
+    padding: 1.5rem;
+    backdrop-filter: blur(20px);
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-    overflow: hidden;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
 }
 
-/* Línea de gradiente superior en cada tarjeta */
-.card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: transparent;
-    transition: background 0.3s ease;
+/* Grupo de Entrada del Formulario */
+.task-input-group {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
 }
 
-.card-html::before { background: linear-gradient(90deg, #e34c26, #f06529); }
-.card-css::before { background: linear-gradient(90deg, #264de4, #2965f1); }
-.card-js::before { background: linear-gradient(90deg, #f0db4f, #ffeb3b); }
-
-/* Efecto Hover en las Tarjetas */
-.card:hover {
-    transform: translateY(-8px);
-    border-color: hsla(217, 30%, 40%, 0.6);
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
-}
-
-.card-icon {
-    font-size: 2.5rem;
-}
-
-.card h2 {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    font-weight: 700;
-}
-
-.card p {
-    color: var(--text-secondary);
+.task-input-group input {
+    flex: 1;
+    min-width: 250px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 0.9rem 1.2rem;
+    color: var(--text-primary);
+    font-family: var(--font-body);
     font-size: 0.95rem;
-    line-height: 1.6;
+    transition: all 0.3s ease;
 }
 
-.tag {
-    align-self: flex-start;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 0.3rem 0.8rem;
-    border-radius: 8px;
-    color: var(--text-secondary);
+.task-input-group input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
 }
 
-/* Botón Mágico Interactivo */
-.magic-button {
-    background: linear-gradient(135deg, var(--accent-purple) 0%, hsl(263, 85%, 60%) 100%);
+/* Selector Personalizado */
+.custom-select-wrapper select {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 0.9rem 1rem;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.custom-select-wrapper select:focus {
+    border-color: var(--accent-purple);
+}
+
+/* Botón Agregar */
+.add-btn {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
     border: none;
     color: white;
     font-family: var(--font-body);
     font-weight: 700;
-    padding: 0.8rem 1.5rem;
-    border-radius: 12px;
+    padding: 0 1.5rem;
+    height: 52px;
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+}
+
+.add-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+.add-btn:active {
+    transform: scale(0.98);
+}
+
+/* Barra de Filtros */
+.filters-group {
+    display: flex;
+    gap: 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 1rem;
+}
+
+.filter-btn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px var(--accent-purple-glow);
-    margin-top: auto;
 }
 
-.magic-button:hover {
-    transform: scale(1.03);
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
 }
 
-.magic-button:active {
-    transform: scale(0.97);
+.filter-btn.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-color);
+    color: var(--accent-blue);
 }
 
-/* Efecto de Brillo Activo desencadenado por JavaScript */
-.active-glow {
-    animation: glowPulse 1s ease-out;
+/* 📋 Listado de Tarjetas de Tareas */
+.board-grid {
+    min-height: 250px;
 }
 
-@keyframes glowPulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5);
-        border-color: var(--accent-purple);
-    }
-    100% {
-        box-shadow: 0 0 30px 10px rgba(139, 92, 246, 0);
-        border-color: var(--border-color);
-    }
+.tasks-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
 }
 
-/* Panel de Mensaje del Logro */
-.magic-panel {
-    background: hsla(223, 47%, 7%, 0.6);
+/* Tarjeta de Tarea Individual (Glassmorphism Card) */
+.task-card {
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
-    backdrop-filter: blur(10px);
     border-radius: 16px;
-    padding: 1.5rem;
-    text-align: center;
-    transition: all 0.5s ease;
+    padding: 1.1rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    backdrop-filter: blur(15px);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
 }
 
-.magic-panel p {
-    font-size: 1rem;
-    color: hsl(210, 40%, 90%);
+/* Efecto hover en tarjeta de tarea */
+.task-card:hover {
+    border-color: var(--border-hover);
+    transform: translateX(4px);
+    box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+}
+
+/* Indicador de prioridad lateral en tarjeta */
+.task-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    border-radius: 16px 0 0 16px;
+}
+
+.priority-baja::before { background-color: var(--priority-low); }
+.priority-media::before { background-color: var(--priority-medium); }
+.priority-alta::before { background-color: var(--priority-high); }
+
+/* Checkbox Personalizado */
+.checkbox-container {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.custom-checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 24px;
+    width: 24px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.checkbox-container:hover input ~ .custom-checkbox {
+    border-color: var(--accent-blue);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.checkbox-container input:checked ~ .custom-checkbox {
+    background-color: var(--accent-blue);
+    border-color: var(--accent-blue);
+}
+
+.custom-checkbox::after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 8px;
+    top: 4px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-container input:checked ~ .custom-checkbox::after {
+    display: block;
+}
+
+/* Contenido de la Tarea */
+.task-content {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.task-text {
+    font-size: 0.95rem;
     font-weight: 500;
     line-height: 1.5;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
 }
 
-.success-glow {
-    border-color: var(--accent-green);
-    background: hsla(142, 71%, 45%, 0.1);
-    box-shadow: 0 0 20px rgba(34, 197, 94, 0.15);
+/* Tareas Completadas (Estilo tachado y atenuado) */
+.task-card.completed {
+    opacity: 0.55;
+    border-color: hsla(217, 30%, 10%, 0.3);
 }
 
-/* Pie de Página */
-.footer {
-    text-align: center;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
+.task-card.completed .task-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
 }
 
-.footer code {
+/* Etiquetas de Prioridad */
+.task-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+}
+
+.tag-baja { background-color: var(--priority-low-bg); color: var(--priority-low); }
+.tag-media { background-color: var(--priority-medium-bg); color: var(--priority-medium); }
+.tag-alta { background-color: var(--priority-high-bg); color: var(--priority-high); }
+
+/* Botón Eliminar Tarea */
+.delete-task-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.25s ease;
+    padding: 0.2rem;
+    border-radius: 6px;
+}
+
+.task-card:hover .delete-task-btn {
+    opacity: 0.6;
+}
+
+.delete-task-btn:hover {
+    opacity: 1 !important;
     background-color: rgba(255, 255, 255, 0.05);
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    color: var(--accent-blue);
-    font-family: monospace;
+    transform: scale(1.1);
 }
 
-/* Responsive para Celulares/Tabletas */
+/* 🏖️ Estado Vacío (Empty State) */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    background: var(--bg-card);
+    border: 1px dashed var(--border-color);
+    border-radius: 20px;
+    gap: 0.8rem;
+    backdrop-filter: blur(10px);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state h3 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    max-width: 320px;
+}
+
+/* 🏷️ Pie de página de la Aplicación */
+.app-footer {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 1rem;
+}
+
+.app-footer strong {
+    color: var(--text-secondary);
+}
+
+/* 📱 Diseño Adaptativo */
 @media (max-width: 600px) {
-    .main-header h1 {
-        font-size: 2.5rem;
+    body {
+        padding: 1rem 0;
     }
     
-    .dashboard-container {
-        padding: 1.5rem 0;
+    .app-header h1 {
+        font-size: 2.1rem;
+    }
+    
+    .controls-panel {
+        padding: 1rem;
+        border-radius: 20px;
+    }
+    
+    .task-input-group {
+        flex-direction: column;
+    }
+    
+    .custom-select-wrapper select,
+    .add-btn {
+        width: 100%;
+    }
+    
+    .filters-group {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding-bottom: 0.3rem;
     }
 }

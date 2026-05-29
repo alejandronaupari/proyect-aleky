@@ -3,98 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Primer Paso en la Programación - Alejandro</title>
-    <!-- Cargamos una fuente tipográfica premium desde Google Fonts -->
+    <title>Alekey TaskBoard - Mi Tablero Inteligente</title>
+    <!-- Fuentes tipográficas modernas -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Vinculamos nuestra hoja de estilos premium -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="background-glow"></div>
-    
-    <main class="dashboard-container">
-        <!-- Encabezado del Portal -->
-        <header class="main-header">
-            <div class="badge">🚀 Misión: Aprender a Programar</div>
-            <h1>¡Hola, <span class="highlight">Alekey</span>!</h1>
-            <p class="subtitle">Este es el inicio de tu viaje en el mundo del desarrollo de software. No necesitas ser programador hoy; hoy solo necesitas tener curiosidad.</p>
+    <!-- Efecto de luces de fondo premium -->
+    <div class="glow-orb orb-purple"></div>
+    <div class="glow-orb orb-blue"></div>
+
+    <div class="app-container">
+        <!-- Encabezado de la Aplicación -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="logo-icon">⚡</span>
+                <h1>Alekey <span class="accent-text">TaskBoard</span></h1>
+            </div>
+            <p class="header-subtitle">Gestión de metas de alto rendimiento con memoria local activa.</p>
         </header>
 
-        <!-- Sección de Tarjetas Interactivas -->
-        <section class="cards-grid">
-            
-            <!-- Tarjeta 1: La Estructura (HTML) -->
-            <div class="card card-html">
-                <div class="card-icon">🦴</div>
-                <h2>El Esqueleto: HTML</h2>
-                <p>HTML es la estructura de una página web. Define dónde van los textos, las imágenes y los botones. Es como los ladrillos y columnas de una casa.</p>
-                <div class="tag">Estructura</div>
+        <!-- Sección Principal: Entrada de Datos y Filtros -->
+        <div class="controls-panel">
+            <!-- Formulario para agregar tareas -->
+            <form id="task-form" class="task-input-group">
+                <input type="text" id="task-input" placeholder="¿Qué gran meta cumpliremos hoy, Alekey?..." required>
+                
+                <div class="custom-select-wrapper">
+                    <select id="task-priority">
+                        <option value="baja">🟢 Prioridad Baja</option>
+                        <option value="media" selected>🟡 Prioridad Media</option>
+                        <option value="alta">🔴 Prioridad Alta</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="add-btn">
+                    <span class="btn-icon">+</span> Agregar Meta
+                </button>
+            </form>
+
+            <!-- Barra de Filtros -->
+            <div class="filters-group">
+                <button class="filter-btn active" data-filter="all">Todas (<span id="count-all">0</span>)</button>
+                <button class="filter-btn" data-filter="active">Pendientes (<span id="count-active">0</span>)</button>
+                <button class="filter-btn" data-filter="completed">Completadas (<span id="count-completed">0</span>)</button>
             </div>
-
-            <!-- Tarjeta 2: El Diseño (CSS) -->
-            <div class="card card-css">
-                <div class="card-icon">🎨</div>
-                <h2>El Diseño: CSS</h2>
-                <p>CSS es el estilo y el arte. Se encarga de los colores oscuros elegantes, los bordes redondeados, las fuentes hermosas y los brillos morados que estás viendo aquí.</p>
-                <div class="tag">Estilo</div>
-            </div>
-
-            <!-- Tarjeta 3: La Acción (JavaScript) -->
-            <div class="card card-js" id="interactive-card">
-                <div class="card-icon">🧠</div>
-                <h2>El Cerebro: JavaScript</h2>
-                <p>JavaScript le da vida a la página. Permite que las cosas reaccionen cuando haces clic en ellas. ¡Haz clic en este botón para ver la magia!</p>
-                <button class="magic-button" id="magic-btn">¡Activar Magia!</button>
-            </div>
-
-        </section>
-
-        <!-- Panel de Mensajes Interactivos -->
-        <div class="magic-panel id-message" id="magic-message-box">
-            <p id="magic-text">💡 Haz clic en el botón de la tercera tarjeta para activar tu primer logro de programación.</p>
         </div>
 
-        <!-- Pie de página elegante -->
-        <footer class="footer">
-            <p>Creado con la ayuda de <strong>Antigravity</strong> • Carpeta de Alejandro: <code>d:\Proyect - Alejandro</code></p>
+        <!-- Contenedor del Tablero de Tareas -->
+        <main class="board-grid">
+            <!-- Listado de Tareas -->
+            <div class="tasks-list-container">
+                <div id="empty-state" class="empty-state">
+                    <div class="empty-icon">☕</div>
+                    <h3>¡Todo despejado por aquí!</h3>
+                    <p>No tienes metas programadas en este momento. Agrega una arriba para empezar.</p>
+                </div>
+                
+                <ul id="tasks-list" class="tasks-list">
+                    <!-- Las tareas se inyectarán aquí dinámicamente con JavaScript -->
+                </ul>
+            </div>
+        </main>
+
+        <!-- Pie de página premium -->
+        <footer class="app-footer">
+            <p>Alekey TaskBoard v1.0 • Desarrollado con <strong>Antigravity</strong> • Datos almacenados localmente en tu navegador</p>
         </footer>
-    </main>
+    </div>
 
-    <!-- Un script simple en JavaScript para la interactividad de la tercera tarjeta -->
+    <!-- Lógica de la Aplicación en JavaScript -->
     <script>
-        const magicBtn = document.getElementById('magic-btn');
-        const cardJs = document.getElementById('interactive-card');
-        const magicMsgBox = document.getElementById('magic-message-box');
-        const magicText = document.getElementById('magic-text');
+        // Elementos del DOM
+        const taskForm = document.getElementById('task-form');
+        const taskInput = document.getElementById('task-input');
+        const taskPriority = document.getElementById('task-priority');
+        const tasksList = document.getElementById('tasks-list');
+        const emptyState = document.getElementById('empty-state');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        
+        // Contadores
+        const countAll = document.getElementById('count-all');
+        const countActive = document.getElementById('count-active');
+        const countCompleted = document.getElementById('count-completed');
 
-        const motivationalPhrases = [
-            "✨ ¡Felicidades! Acabas de ejecutar tu primera función en JavaScript. ¡Ya estás interactuando con código!",
-            "🔥 Un programador no es alguien que lo sabe todo, sino alguien que sabe resolver problemas paso a paso.",
-            "🌟 El secreto para programar es la constancia. ¡Estás haciéndolo genial, Alejandro!",
-            "💻 ¡Todo el software del mundo (Facebook, Netflix, etc.) funciona bajo estos mismos principios!"
-        ];
+        // Estado inicial de las tareas (Cargar desde LocalStorage o empezar vacío)
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        let currentFilter = 'all';
 
-        let index = 0;
+        // Guardar tareas en LocalStorage
+        function saveTasksToLocalStorage() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
 
-        magicBtn.addEventListener('click', (e) => {
-            // Prevenir propagación
-            e.stopPropagation();
+        // Renderizar la lista de tareas en pantalla
+        function renderTasks() {
+            tasksList.innerHTML = '';
             
-            // Cambiar el mensaje motivacional
-            magicText.textContent = motivationalPhrases[index];
-            index = (index + 1) % motivationalPhrases.length;
+            // Filtrar las tareas
+            const filteredTasks = tasks.filter(task => {
+                if (currentFilter === 'active') return !task.completed;
+                if (currentFilter === 'completed') return task.completed;
+                return true;
+            });
 
-            // Añadir un efecto visual de brillo y pulso a la tarjeta
-            cardJs.classList.add('active-glow');
-            magicMsgBox.classList.add('success-glow');
+            // Mostrar/Ocultar estado vacío
+            if (filteredTasks.length === 0) {
+                emptyState.style.display = 'flex';
+            } else {
+                emptyState.style.display = 'none';
+            }
+
+            // Crear y agregar cada tarjeta de tarea
+            filteredTasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `task-card priority-${task.priority} ${task.completed ? 'completed' : ''}`;
+                li.dataset.id = task.id;
+
+                li.innerHTML = `
+                    <div class="checkbox-container">
+                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''}>
+                        <span class="custom-checkbox"></span>
+                    </div>
+                    <div class="task-content">
+                        <span class="task-text">${escapeHTML(task.text)}</span>
+                        <span class="task-tag tag-${task.priority}">${task.priority.toUpperCase()}</span>
+                    </div>
+                    <button class="delete-task-btn" title="Eliminar tarea">🗑️</button>
+                `;
+
+                // Evento para tachar/completar
+                const checkbox = li.querySelector('.task-checkbox');
+                checkbox.addEventListener('change', () => toggleTaskComplete(task.id));
+
+                // Evento para eliminar
+                const deleteBtn = li.querySelector('.delete-task-btn');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteTask(task.id);
+                });
+
+                tasksList.appendChild(li);
+            });
+
+            // Actualizar contadores globales
+            updateCounters();
+        }
+
+        // Escapar HTML para evitar inyecciones
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        // Agregar una nueva tarea
+        function addTask(text, priority) {
+            const newTask = {
+                id: Date.now().toString(),
+                text: text,
+                priority: priority,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
+
+            tasks.unshift(newTask); // Agregar al principio
+            saveTasksToLocalStorage();
+            renderTasks();
+        }
+
+        // Cambiar estado de completado
+        function toggleTaskComplete(id) {
+            tasks = tasks.map(task => {
+                if (task.id === id) {
+                    return { ...task, completed: !task.completed };
+                }
+                return task;
+            });
+            saveTasksToLocalStorage();
+            renderTasks();
+        }
+
+        // Eliminar una tarea
+        function deleteTask(id) {
+            // Animación de salida antes de eliminar del arreglo
+            const card = document.querySelector(`[data-id="${id}"]`);
+            if (card) {
+                card.style.transform = 'scale(0.8) translateY(20px)';
+                card.style.opacity = '0';
+                card.style.transition = 'all 0.3s ease';
+                setTimeout(() => {
+                    tasks = tasks.filter(task => task.id !== id);
+                    saveTasksToLocalStorage();
+                    renderTasks();
+                }, 300);
+            } else {
+                tasks = tasks.filter(task => task.id !== id);
+                saveTasksToLocalStorage();
+                renderTasks();
+            }
+        }
+
+        // Actualizar contadores de las pestañas
+        function updateCounters() {
+            const allCount = tasks.length;
+            const activeCount = tasks.filter(t => !t.completed).length;
+            const completedCount = tasks.filter(t => t.completed).length;
+
+            countAll.textContent = allCount;
+            countActive.textContent = activeCount;
+            countCompleted.textContent = completedCount;
+        }
+
+        // Evento de envío del formulario
+        taskForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = taskInput.value.trim();
+            const priority = taskPriority.value;
             
-            // Remover el brillo después de un segundo para que se pueda repetir
-            setTimeout(() => {
-                cardJs.classList.remove('active-glow');
-            }, 1000);
+            if (text) {
+                addTask(text, priority);
+                taskInput.value = ''; // Limpiar campo
+                taskInput.focus();
+            }
         });
+
+        // Eventos de los botones de filtro
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderTasks();
+            });
+        });
+
+        // Inicializar el tablero en pantalla al cargar
+        renderTasks();
     </script>
 </body>
 </html>
