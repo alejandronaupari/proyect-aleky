@@ -202,23 +202,19 @@
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="calc-he-normal">Horas Extras Normales</label>
+                                    <label for="calc-he-normal">Horas Extras Normales (Lunes a Sábado)</label>
                                     <input type="number" id="calc-he-normal" value="0" min="0">
                                 </div>
                                 <div class="form-group">
-                                    <label for="calc-tardanzas">Tardanzas (Horas)</label>
-                                    <input type="number" id="calc-tardanzas" value="0" min="0">
+                                    <label for="calc-he-domingo">H.E. Doble / Amanecida (2.0x)</label>
+                                    <input type="number" id="calc-he-domingo" value="0" min="0">
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="calc-he-sabado">H.E. Sábado (1.5x)</label>
-                                    <input type="number" id="calc-he-sabado" value="0" min="0">
-                                </div>
-                                <div class="form-group">
-                                    <label for="calc-he-domingo">H.E. Domingo (2x)</label>
-                                    <input type="number" id="calc-he-domingo" value="0" min="0">
+                                    <label for="calc-tardanzas">Tardanzas (Horas)</label>
+                                    <input type="number" id="calc-tardanzas" value="0" min="0">
                                 </div>
                             </div>
 
@@ -291,17 +287,12 @@
                                     <span>-</span>
                                 </div>
                                 <div class="bol-row" id="row-bol-he-normal">
-                                    <span>Horas Extras Normales (<span id="bol-qty-he-normal">0</span> hrs)</span>
+                                    <span>Horas Extras Normales L-S (<span id="bol-qty-he-normal">0</span> hrs)</span>
                                     <span id="bol-ingreso-he-normal">S/.0.00</span>
                                     <span>-</span>
                                 </div>
-                                <div class="bol-row" id="row-bol-he-sabado">
-                                    <span>H.E. Sábado (<span id="bol-qty-he-sabado">0</span> hrs)</span>
-                                    <span id="bol-ingreso-he-sabado">S/.0.00</span>
-                                    <span>-</span>
-                                </div>
                                 <div class="bol-row" id="row-bol-he-domingo">
-                                    <span>H.E. Domingo (<span id="bol-qty-he-domingo">0</span> hrs)</span>
+                                    <span>H.E. Doble / Amanecida (<span id="bol-qty-he-domingo">0</span> hrs)</span>
                                     <span id="bol-ingreso-he-domingo">S/.0.00</span>
                                     <span>-</span>
                                 </div>
@@ -673,8 +664,7 @@
             
             // Valores ingresados
             const qtyHeNormal = parseFloat(document.getElementById('calc-he-normal').value) || 0;
-            const qtyHeSabado = parseFloat(document.getElementById('calc-he-sabado').value) || 0;
-            const qtyHeDomingo = parseFloat(document.getElementById('calc-he-domingo').value) || 0;
+            const qtyHeDomingo = parseFloat(document.getElementById('calc-he-domingo').value) || 0; // Doble / Amanecida
             const qtyTardanza = parseFloat(document.getElementById('calc-tardanzas').value) || 0;
             const prestamos = parseFloat(document.getElementById('calc-prestamos').value) || 0;
             const afpVal = parseFloat(calcAfp.value) || 0;
@@ -684,12 +674,11 @@
             const pagoQuincena = salary / 2; // Quincena estándar es la mitad del sueldo
             
             const ingresoHeNormal = qtyHeNormal * hourlyRate;
-            const ingresoHeSabado = qtyHeSabado * (hourlyRate * 1.5); // Sábado 1.5x
-            const ingresoHeDomingo = qtyHeDomingo * (hourlyRate * 2); // Domingo 2x
+            const ingresoHeDomingo = qtyHeDomingo * (hourlyRate * 2); // Doble / Amanecida 2x
             
             const egresoTardanza = qtyTardanza * hourlyRate;
 
-            const totalIngresos = pagoQuincena + ingresoHeNormal + ingresoHeSabado + ingresoHeDomingo;
+            const totalIngresos = pagoQuincena + ingresoHeNormal + ingresoHeDomingo;
             const totalEgresos = egresoTardanza + afpVal + prestamos;
             const netoPagar = totalIngresos - totalEgresos;
 
@@ -708,10 +697,6 @@
             document.getElementById('bol-qty-he-normal').textContent = qtyHeNormal;
             document.getElementById('bol-ingreso-he-normal').textContent = `S/.${ingresoHeNormal.toFixed(2)}`;
             document.getElementById('row-bol-he-normal').style.display = qtyHeNormal > 0 ? 'flex' : 'none';
-
-            document.getElementById('bol-qty-he-sabado').textContent = qtyHeSabado;
-            document.getElementById('bol-ingreso-he-sabado').textContent = `S/.${ingresoHeSabado.toFixed(2)}`;
-            document.getElementById('row-bol-he-sabado').style.display = qtyHeSabado > 0 ? 'flex' : 'none';
 
             document.getElementById('bol-qty-he-domingo').textContent = qtyHeDomingo;
             document.getElementById('bol-ingreso-he-domingo').textContent = `S/.${ingresoHeDomingo.toFixed(2)}`;
