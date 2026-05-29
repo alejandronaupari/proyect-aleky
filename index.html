@@ -1177,7 +1177,7 @@
         }
 
         // --- 📅 REGISTRO DE ASISTENCIA SEMANAL ---
-        let attendance = JSON.parse(localStorage.getItem('rrhh_attendance')) || {};
+        // (La variable 'attendance' ya está declarada e inicializada al inicio del script)
 
         function saveAttendance() {
             localStorage.setItem('rrhh_attendance', JSON.stringify(attendance));
